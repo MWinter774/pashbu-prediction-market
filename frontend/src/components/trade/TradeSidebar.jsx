@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMarketLabels } from '../../hooks/useMarketLabels';
-import { submitBet } from '../layouts/trade/TradeUtils';
+import { submitBet, fetchUserShares, submitSale } from '../layouts/trade/TradeUtils';
 import useUserCredit from '../utils/userFinanceTools/FetchUserCredit';
 import { useAuth } from '../../helpers/AuthContent';
 
@@ -8,16 +8,35 @@ const TradeSidebar = ({ market, marketId, currentProbability, token, isLoggedIn,
   const [mode, setMode] = useState('buy'); // 'buy' or 'sell'
   const [selectedOutcome, setSelectedOutcome] = useState(null);
   const [amount, setAmount] = useState(0);
+  const [shares, setShares] = useState({ noSharesOwned: 0, yesSharesOwned: 0 });
   const { yesLabel, noLabel } = useMarketLabels(market);
   const { username } = useAuth();
   const { userCredit } = useUserCredit(username);
+
+  useEffect(() => {
+    if (mode === 'sell' && token) {
+      fetchUserShares(marketId, token)
+        .then((data) => {
+          const sharesObj = Array.isArray(data)
+            ? data[0] || { noSharesOwned: 0, yesSharesOwned: 0 }
+            : data || { noSharesOwned: 0, yesSharesOwned: 0 };
+          setShares(sharesObj);
+        })
+        .catch(() => setShares({ noSharesOwned: 0, yesSharesOwned: 0 }));
+    }
+  }, [mode, marketId, token]);
 
   const yesPrice = Math.round(currentProbability * 100);
   const noPrice = 100 - yesPrice;
 
   const handleQuickAdd = (value) => {
     if (value === 'max') {
-      setAmount(userCredit || 0);
+      if (mode === 'sell') {
+        const maxShares = selectedOutcome === 'YES' ? shares.yesSharesOwned : shares.noSharesOwned;
+        setAmount(maxShares || 0);
+      } else {
+        setAmount(userCredit || 0);
+      }
     } else {
       setAmount((prev) => prev + value);
     }
@@ -46,7 +65,20 @@ const TradeSidebar = ({ market, marketId, currentProbability, token, isLoggedIn,
         (error) => alert(`Trade failed: ${error.message}`)
       );
     }
-    // Sell flow will be added in Task 2
+
+    if (mode === 'sell') {
+      submitSale(
+        { marketId, amount, outcome: selectedOutcome },
+        token,
+        (data) => {
+          alert(`Sale complete! ID: ${data.id}`);
+          setAmount(0);
+          setSelectedOutcome(null);
+          if (onTransactionSuccess) onTransactionSuccess();
+        },
+        (error) => alert(`Sale failed: ${error.message}`)
+      );
+    }
   };
 
   const isResolved = market.isResolved;
