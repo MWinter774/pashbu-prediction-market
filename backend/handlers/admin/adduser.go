@@ -27,7 +27,8 @@ func AddUserHandler(loadEconConfig setup.EconConfigLoader) func(http.ResponseWri
 		securityService := security.NewSecurityService()
 
 		var req struct {
-			Username string `json:"username" validate:"required,min=3,max=30,username"`
+			Username    string   `json:"username" validate:"required,min=3,max=30,username"`
+			Permissions []string `json:"permissions"`
 		}
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			http.Error(w, "Error decoding request body", http.StatusBadRequest)
@@ -36,7 +37,9 @@ func AddUserHandler(loadEconConfig setup.EconConfigLoader) func(http.ResponseWri
 		}
 
 		// Validate the username using security service
-		if err := securityService.Validator.ValidateStruct(req); err != nil {
+		if err := securityService.Validator.ValidateStruct(struct {
+			Username string `json:"username" validate:"required,min=3,max=30,username"`
+		}{Username: req.Username}); err != nil {
 			http.Error(w, "Invalid username: "+err.Error(), http.StatusBadRequest)
 			log.Printf("AddUserHandler: %v", err)
 			return
@@ -53,10 +56,24 @@ func AddUserHandler(loadEconConfig setup.EconConfigLoader) func(http.ResponseWri
 
 		db := util.GetDB()
 
-		// validate that the user performing this function is indeed admin
-		if err := middleware.ValidateAdminToken(r, db); err != nil {
-			http.Error(w, "unauthorized", http.StatusUnauthorized)
+		// Validate that the user has create_users permission
+		if _, httpErr := middleware.ValidateUserHasPermission(r, db, "create_users"); httpErr != nil {
+			http.Error(w, httpErr.Message, httpErr.StatusCode)
 			return
+		}
+
+		// Resolve requested permissions to Permission objects
+		var permissions []models.Permission
+		if len(req.Permissions) > 0 {
+			if err := db.Where("name IN ?", req.Permissions).Find(&permissions).Error; err != nil {
+				http.Error(w, "Failed to resolve permissions", http.StatusInternalServerError)
+				log.Printf("AddUserHandler: %v", err)
+				return
+			}
+			if len(permissions) != len(req.Permissions) {
+				http.Error(w, "One or more invalid permission names", http.StatusBadRequest)
+				return
+			}
 		}
 
 		appConfig := loadEconConfig()
@@ -64,7 +81,6 @@ func AddUserHandler(loadEconConfig setup.EconConfigLoader) func(http.ResponseWri
 			PublicUser: models.PublicUser{
 				Username:              req.Username,
 				DisplayName:           util.UniqueDisplayName(db),
-				UserType:              "REGULAR",
 				InitialAccountBalance: appConfig.Economics.User.InitialAccountBalance,
 				AccountBalance:        appConfig.Economics.User.InitialAccountBalance,
 				PersonalEmoji:         randomEmoji(),
@@ -96,18 +112,26 @@ func AddUserHandler(loadEconConfig setup.EconConfigLoader) func(http.ResponseWri
 			return
 		}
 
+		// Assign permissions
+		if len(permissions) > 0 {
+			if err := db.Model(&user).Association("Permissions").Append(&permissions); err != nil {
+				http.Error(w, "Failed to assign permissions", http.StatusInternalServerError)
+				log.Printf("AddUserHandler: %v", err)
+				return
+			}
+		}
+
 		responseData := map[string]interface{}{
-			"message":  "User created successfully",
-			"username": user.Username,
-			"password": password,
-			"usertype": user.UserType,
+			"message":     "User created successfully",
+			"username":    user.Username,
+			"password":    password,
+			"permissions": req.Permissions,
 		}
 		json.NewEncoder(w).Encode(responseData)
 	}
 }
 
 func checkUniqueFields(db *gorm.DB, user *models.User) error {
-	// Check for existing users with the same username, display name, email, or API key.
 	var count int64
 	db.Model(&models.User{}).Where(
 		"username = ? OR display_name = ? OR email = ? OR api_key = ?",

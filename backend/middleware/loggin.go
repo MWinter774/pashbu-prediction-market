@@ -66,7 +66,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Find user by username
 	var user models.User
-	result := db.Where("username = ?", req.Username).First(&user)
+	result := db.Preload("Permissions").Where("username = ?", req.Username).First(&user)
 	if result.Error != nil {
 		if result.Error == gorm.ErrRecordNotFound {
 			http.Error(w, "Invalid Credentials", http.StatusUnauthorized)
@@ -103,11 +103,11 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	// Prepare to send JSON
 	w.Header().Set("Content-Type", "application/json")
 
-	// Send token, username, and usertype in the response
+	// Send token, username, and permissions in the response
 	responseData := map[string]interface{}{
 		"token":              tokenString,
 		"username":           user.Username,
-		"usertype":           user.UserType,
+		"permissions":        user.PermissionNames(),
 		"mustChangePassword": user.MustChangePassword,
 	}
 	json.NewEncoder(w).Encode(responseData)
