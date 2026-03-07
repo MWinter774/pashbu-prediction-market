@@ -134,6 +134,10 @@ func Start() {
 	router.Handle("/v0/markets/positions/{marketId}", securityMiddleware(http.HandlerFunc(positions.MarketDBPMPositionsHandler))).Methods("GET")
 	router.Handle("/v0/markets/positions/{marketId}/{username}", securityMiddleware(http.HandlerFunc(positions.MarketDBPMUserPositionsHandler))).Methods("GET")
 	router.Handle("/v0/markets/leaderboard/{marketId}", securityMiddleware(http.HandlerFunc(marketshandlers.MarketLeaderboardHandler))).Methods("GET")
+	router.Handle("/v0/markets/{marketId}/image", securityMiddleware(http.HandlerFunc(marketshandlers.UploadMarketImageHandler))).Methods("PUT")
+
+	// Serve uploaded market images (public, no security middleware)
+	router.PathPrefix("/v0/uploads/markets/").Handler(marketshandlers.ServeMarketImages())
 
 	// handle public user stuff
 	router.Handle("/v0/userinfo/{username}", securityMiddleware(http.HandlerFunc(publicuser.GetPublicUserResponse))).Methods("GET")
