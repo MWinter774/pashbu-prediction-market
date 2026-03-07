@@ -20,6 +20,7 @@ type Market struct {
 	InitialProbability      float64   `json:"initialProbability" gorm:"not null"`
 	YesLabel                string    `json:"yesLabel" gorm:"default:YES"`
 	NoLabel                 string    `json:"noLabel" gorm:"default:NO"`
+	Category                string    `json:"category" gorm:"default:General"`
 	CreatorUsername         string    `json:"creatorUsername" gorm:"not null"`
 	Creator                 User      `gorm:"foreignKey:CreatorUsername;references:Username"`
 }
