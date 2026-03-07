@@ -1,7 +1,6 @@
 package http
 
 import (
-	"context"
 	"encoding/json"
 	"net/http"
 	"socialpredict/handlers/cms/homepage"
@@ -29,7 +28,7 @@ func (h *Handler) PublicGet(w http.ResponseWriter, r *http.Request) {
 		"title":     item.Title,
 		"format":    item.Format,
 		"html":      item.HTML,
-		"markdown":  item.Markdown, // optional to expose
+		"markdown":  item.Markdown,
 		"version":   item.Version,
 		"updatedAt": item.UpdatedAt,
 	})
@@ -37,22 +36,17 @@ func (h *Handler) PublicGet(w http.ResponseWriter, r *http.Request) {
 
 type updateReq struct {
 	Title    string `json:"title"`
-	Format   string `json:"format"`   // "markdown" | "html"
-	Markdown string `json:"markdown"` // when format=markdown
-	HTML     string `json:"html"`     // when format=html
+	Format   string `json:"format"`
+	Markdown string `json:"markdown"`
+	HTML     string `json:"html"`
 	Version  uint   `json:"version"`
 }
 
 func (h *Handler) AdminUpdate(w http.ResponseWriter, r *http.Request) {
-	// Validate admin access
 	db := util.GetDB()
-	if err := middleware.ValidateAdminToken(r, db); err != nil {
-		http.Error(w, "unauthorized", http.StatusUnauthorized)
-		return
-	}
 
-	// Get username from context/token
-	user, httpErr := middleware.ValidateTokenAndGetUser(r, db)
+	// Validate user has edit_homepage permission
+	user, httpErr := middleware.ValidateUserHasPermission(r, db, "edit_homepage")
 	if httpErr != nil {
 		http.Error(w, httpErr.Message, httpErr.StatusCode)
 		return
@@ -84,23 +78,4 @@ func (h *Handler) AdminUpdate(w http.ResponseWriter, r *http.Request) {
 		"html":    item.HTML,
 		"version": item.Version,
 	})
-}
-
-// RequireAdmin middleware wrapper that can be used in routes
-func RequireAdmin(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		db := util.GetDB()
-		if err := middleware.ValidateAdminToken(r, db); err != nil {
-			http.Error(w, "unauthorized", http.StatusUnauthorized)
-			return
-		}
-		next.ServeHTTP(w, r)
-	}
-}
-
-// UsernameFromContext extracts username from request context (helper function)
-func UsernameFromContext(ctx context.Context) string {
-	// This is a placeholder - in practice you might store username in context
-	// during authentication middleware
-	return "admin" // fallback for now
 }
