@@ -55,3 +55,6 @@ tmp/
 
 # Apple Silicon Docker Compose Override
 docker-compose.override.yml
+
+# Claude Code local settings
+.claude/settings.local.json
