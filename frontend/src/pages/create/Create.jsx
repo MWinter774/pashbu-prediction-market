@@ -18,6 +18,8 @@ function Create() {
   const [yesLabel, setYesLabel] = useState('');
   const [noLabel, setNoLabel] = useState('');
   const [category, setCategory] = useState('General');
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [error, setError] = useState('');
   const { username } = useAuth();
   const history = useHistory();
@@ -89,6 +91,18 @@ function Create() {
       if (response.ok) {
         const responseData = await response.json();
         console.log('Market creation successful:', responseData);
+
+        // Upload image if provided
+        if (imageFile && responseData.id) {
+          const formData = new FormData();
+          formData.append('image', imageFile);
+          await fetch(`${API_URL}/v0/markets/${responseData.id}/image`, {
+            method: 'PUT',
+            headers: { 'Authorization': `Bearer ${token}` },
+            body: formData,
+          });
+        }
+
         history.push(`/markets/${responseData.id}`);
       } else {
         const errorText = await response.text();
@@ -210,6 +224,32 @@ function Create() {
           >
             <option value='General'>General</option>
           </select>
+        </div>
+
+        {/* Market Image */}
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-1">
+            Market Image (optional)
+          </label>
+          <input
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            onChange={(e) => {
+              const file = e.target.files[0];
+              if (file) {
+                if (file.size > 2 * 1024 * 1024) {
+                  setError('Image must be under 2MB');
+                  return;
+                }
+                setImageFile(file);
+                setImagePreview(URL.createObjectURL(file));
+              }
+            }}
+            className="block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-pm-card file:text-gray-300 hover:file:bg-pm-hover"
+          />
+          {imagePreview && (
+            <img src={imagePreview} alt="Preview" className="mt-2 w-20 h-20 rounded-lg object-cover" />
+          )}
         </div>
 
         {error && (
