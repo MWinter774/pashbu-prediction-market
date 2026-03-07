@@ -295,28 +295,28 @@ func TestValidateTokenAndGetUser_InvalidToken(t *testing.T) {
 	}
 }
 
-func TestValidateAdminToken_MissingHeader(t *testing.T) {
+func TestValidateUserHasPermission_MissingHeader(t *testing.T) {
 	db := modelstesting.NewFakeDB(t)
 
 	req := httptest.NewRequest("GET", "/test", nil)
 	// No Authorization header
 
-	err := ValidateAdminToken(req, db)
+	_, httpErr := ValidateUserHasPermission(req, db, "create_users")
 
-	if err == nil {
+	if httpErr == nil {
 		t.Error("Expected error but got none")
 	}
 }
 
-func TestValidateAdminToken_InvalidToken(t *testing.T) {
+func TestValidateUserHasPermission_InvalidToken(t *testing.T) {
 	db := modelstesting.NewFakeDB(t)
 
 	req := httptest.NewRequest("GET", "/test", nil)
 	req.Header.Set("Authorization", "Bearer invalid.token.here")
 
-	err := ValidateAdminToken(req, db)
+	_, httpErr := ValidateUserHasPermission(req, db, "create_users")
 
-	if err == nil {
+	if httpErr == nil {
 		t.Error("Expected error but got none")
 	}
 }
