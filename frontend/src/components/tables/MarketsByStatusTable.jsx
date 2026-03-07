@@ -6,6 +6,7 @@ import MobileMarketCard from './MobileMarketCard';
 import LoadingSpinner from '../loaders/LoadingSpinner';
 import ExpandableLink from '../utils/ExpandableLink';
 import { getResolvedText, getResultCssClass } from '../../utils/labelMapping';
+import MarketCardGrid from '../cards/MarketCardGrid';
 
 const TableHeader = () => (
   <thead className='bg-gray-900'>
@@ -89,7 +90,7 @@ const MarketRow = ({ marketData }) => (
   </tr>
 );
 
-function MarketsByStatusTable({ status }) {
+function MarketsByStatusTable({ status, useCardGrid }) {
   const [marketsData, setMarketsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -143,6 +144,8 @@ function MarketsByStatusTable({ status }) {
         <div className='p-4 text-center text-gray-400'>
           No {status} markets found.
         </div>
+      ) : useCardGrid ? (
+        <MarketCardGrid markets={marketsData} />
       ) : (
         <>
           <div className='md:hidden'>
