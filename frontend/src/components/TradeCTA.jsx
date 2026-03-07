@@ -1,29 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export default function TradeCTA({ onClick, disabled }) {
-  const [isSelected, setIsSelected] = useState(false);
-  const initialButtonStyle = "bg-custom-gray-light";
-  const selectedButtonStyle = "bg-neutral-btn";
-  const buttonBaseStyle = "w-full px-4 py-2 text-white border rounded focus:outline-none";
-
-  const handleClick = () => {
-    setIsSelected(!isSelected);
-    onClick && onClick();
-  };
-
   return (
     <div
-      className="md:hidden fixed inset-x-0 bottom-0 z-40 bg-primary-background/90 backdrop-blur p-3"
-      style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 80px)' }}
-      data-testid="mobile-trade-cta"
+      className="md:hidden fixed inset-x-0 bottom-0 z-40 bg-pm-page/90 backdrop-blur p-3"
+      style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 12px)' }}
     >
       <button
         type="button"
-        onClick={handleClick}
+        onClick={onClick}
         disabled={disabled}
-        className={`${buttonBaseStyle} ${isSelected ? selectedButtonStyle : initialButtonStyle} min-w-32 text-xs sm:text-sm md:text-base disabled:opacity-50`}
+        className="w-full py-3 rounded-xl text-base font-bold bg-pm-yes text-white hover:bg-pm-yes/90 transition-colors disabled:opacity-50"
       >
-        TRADE
+        Trade
       </button>
     </div>
   );
