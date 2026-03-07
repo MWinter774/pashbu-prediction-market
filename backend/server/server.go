@@ -16,6 +16,7 @@ import (
 	positions "socialpredict/handlers/positions"
 	setuphandlers "socialpredict/handlers/setup"
 	statshandlers "socialpredict/handlers/stats"
+	permissionshandlers "socialpredict/handlers/permissions"
 	usershandlers "socialpredict/handlers/users"
 	usercredit "socialpredict/handlers/users/credit"
 	privateuser "socialpredict/handlers/users/privateuser"
@@ -158,7 +159,8 @@ func Start() {
 	router.Handle("/v0/create", securityMiddleware(http.HandlerFunc(marketshandlers.CreateMarketHandler(setup.EconomicsConfig)))).Methods("POST")
 
 	// admin stuff - apply security middleware
-	router.Handle("/v0/admin/createuser", securityMiddleware(http.HandlerFunc(adminhandlers.AddUserHandler(setup.EconomicsConfig)))).Methods("POST")
+	router.Handle("/v0/users/create", securityMiddleware(http.HandlerFunc(adminhandlers.AddUserHandler(setup.EconomicsConfig)))).Methods("POST")
+	router.Handle("/v0/permissions", securityMiddleware(http.HandlerFunc(permissionshandlers.ListPermissionsHandler))).Methods("GET")
 
 	// homepage content routes
 	db := util.GetDB()
