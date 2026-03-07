@@ -52,6 +52,13 @@ export default {
         'warning-orange': {
           DEFAULT: '#ffc107',
         },
+        'pm-page': '#171923',
+        'pm-card': '#1e2231',
+        'pm-card-border': '#2d3348',
+        'pm-muted': '#8b8fa3',
+        'pm-yes': '#22c55e',
+        'pm-no': '#ef4444',
+        'pm-hover': '#252a3a',
       },
       borderRadius: {
         'badge': '12px'
