@@ -67,7 +67,6 @@ func GenerateUser(username string, startingBalance int64) models.User {
 		PublicUser: models.PublicUser{
 			Username:              username,
 			DisplayName:           fmt.Sprintf("%s_display_%s", username, uniqueId),
-			UserType:              "regular",
 			InitialAccountBalance: startingBalance,
 			AccountBalance:        startingBalance,
 		},
