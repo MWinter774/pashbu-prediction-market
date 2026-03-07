@@ -1,5 +1,5 @@
 import { API_URL, DOMAIN_URL } from '../../../config';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SiteButton from '../../buttons/SiteButtons';
 import { RegularInput } from '../../inputs/InputBar'
 
@@ -8,23 +8,51 @@ function AdminAddUser() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [copied, setCopied] = useState(false);
+    const [availablePermissions, setAvailablePermissions] = useState([]);
+    const [selectedPermissions, setSelectedPermissions] = useState([]);
+
+    useEffect(() => {
+        const fetchPermissions = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/v0/permissions`, {
+                    headers: { 'Authorization': `Bearer ${token}` },
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setAvailablePermissions(data);
+                }
+            } catch (err) {
+                console.error('Failed to fetch permissions:', err);
+            }
+        };
+        fetchPermissions();
+    }, []);
 
     const handleUsernameChange = (event) => {
         setUsername(event.target.value);
+    };
+
+    const togglePermission = (permName) => {
+        setSelectedPermissions(prev =>
+            prev.includes(permName)
+                ? prev.filter(p => p !== permName)
+                : [...prev, permName]
+        );
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         setError('');
         try {
-          const token = localStorage.getItem('token');
-            const response = await fetch(`${API_URL}/v0/admin/createuser`, {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API_URL}/v0/users/create`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${token}`,
+                    'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify({ username })
+                body: JSON.stringify({ username, permissions: selectedPermissions })
             });
             if (!response.ok) {
                 const errMessage = await response.text()
@@ -42,7 +70,7 @@ function AdminAddUser() {
         const credentials = `${DOMAIN_URL} \n Username: ${username}\nPassword: ${password}`;
         navigator.clipboard.writeText(credentials).then(() => {
             setCopied(true);
-            setTimeout(() => setCopied(false), 2000);  // Notification timeout
+            setTimeout(() => setCopied(false), 2000);
         });
     };
 
@@ -51,6 +79,7 @@ function AdminAddUser() {
         setPassword('');
         setError('');
         setCopied(false);
+        setSelectedPermissions([]);
     };
 
     return (
@@ -65,6 +94,20 @@ function AdminAddUser() {
                             placeholder="All lowercase letters and numbers"
                             required
                         />
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-300">Permissions</label>
+                            {availablePermissions.map(perm => (
+                                <label key={perm.name} className="flex items-center gap-2 text-sm text-gray-300">
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedPermissions.includes(perm.name)}
+                                        onChange={() => togglePermission(perm.name)}
+                                        className="rounded border-gray-600"
+                                    />
+                                    {perm.description || perm.name}
+                                </label>
+                            ))}
+                        </div>
                         <SiteButton type="submit">
                             Add User
                         </SiteButton>
