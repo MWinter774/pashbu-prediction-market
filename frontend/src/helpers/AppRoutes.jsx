@@ -20,7 +20,8 @@ const AppRoutes = () => {
   const auth = useAuth();
 
   const isLoggedIn = !!auth.username;
-  const isRegularUser = isLoggedIn && auth.usertype !== 'ADMIN';
+  const permissions = auth.permissions || [];
+  const hasPermission = (perm) => permissions.includes(perm);
   const mustChangePassword = isLoggedIn && auth.changePasswordNeeded;
 
   return (
@@ -81,7 +82,7 @@ const AppRoutes = () => {
           <Redirect to='/' />
         ) : mustChangePassword ? (
           <Redirect to='/changepassword' />
-        ) : isRegularUser ? (
+        ) : hasPermission('create_markets') ? (
           <Create />
         ) : (
           <Redirect to='/' />
@@ -92,21 +93,21 @@ const AppRoutes = () => {
           <Redirect to='/' />
         ) : mustChangePassword ? (
           <Redirect to='/changepassword' />
-        ) : isRegularUser ? (
+        ) : isLoggedIn ? (
           <Notifications />
         ) : (
           <Redirect to='/' />
         )}
       </Route>
       <Route exact path='/profile'>
-        {isRegularUser ? <Profile /> : <Redirect to='/' />}
+        {isLoggedIn ? <Profile /> : <Redirect to='/' />}
       </Route>
 
       {/* Admin Routes */}
       <Route exact path='/admin'>
         {isLoggedIn && mustChangePassword ? (
 	  <Redirect to='/changepassword' />
-	) : isLoggedIn && auth.usertype === 'ADMIN' ? (
+	) : isLoggedIn && hasPermission('create_users') ? (
           <AdminDashboard />
         ) : (
           <Redirect to='/' />

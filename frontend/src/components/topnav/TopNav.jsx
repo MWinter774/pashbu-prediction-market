@@ -4,7 +4,7 @@ import { useAuth } from '../../helpers/AuthContent';
 import useUserCredit from '../utils/userFinanceTools/FetchUserCredit';
 import LoginModalButton from '../modals/login/LoginModalClick';
 
-const UserMenu = ({ username, usertype, userCredit, onLogout }) => {
+const UserMenu = ({ username, permissions, userCredit, onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -39,7 +39,7 @@ const UserMenu = ({ username, usertype, userCredit, onLogout }) => {
           >
             Profile
           </Link>
-          {usertype === 'ADMIN' && (
+          {permissions.includes('create_users') && (
             <Link
               to="/admin"
               className="block px-4 py-2 text-sm text-gray-300 hover:bg-pm-hover"
@@ -55,13 +55,15 @@ const UserMenu = ({ username, usertype, userCredit, onLogout }) => {
           >
             Alerts
           </Link>
-          <Link
-            to="/create"
-            className="block px-4 py-2 text-sm text-gray-300 hover:bg-pm-hover"
-            onClick={() => setIsOpen(false)}
-          >
-            Create Market
-          </Link>
+          {permissions.includes('create_markets') && (
+            <Link
+              to="/create"
+              className="block px-4 py-2 text-sm text-gray-300 hover:bg-pm-hover"
+              onClick={() => setIsOpen(false)}
+            >
+              Create Market
+            </Link>
+          )}
           <button
             onClick={() => { onLogout(); setIsOpen(false); }}
             className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-pm-hover"
@@ -75,7 +77,7 @@ const UserMenu = ({ username, usertype, userCredit, onLogout }) => {
 };
 
 const TopNav = () => {
-  const { isLoggedIn, username, usertype, logout, changePasswordNeeded } = useAuth();
+  const { isLoggedIn, username, permissions, logout, changePasswordNeeded } = useAuth();
   const { userCredit } = useUserCredit(username);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -124,7 +126,7 @@ const TopNav = () => {
             ) : (
               <UserMenu
                 username={username}
-                usertype={usertype}
+                permissions={permissions || []}
                 userCredit={userCredit}
                 onLogout={logout}
               />
