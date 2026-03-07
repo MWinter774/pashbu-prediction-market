@@ -41,7 +41,7 @@ const TradeSidebar = ({ market, marketId, currentProbability, token, isLoggedIn,
           alert(`Trade placed! ID: ${data.id}`);
           setAmount(0);
           setSelectedOutcome(null);
-          onTransactionSuccess();
+          if (onTransactionSuccess) onTransactionSuccess();
         },
         (error) => alert(`Trade failed: ${error.message}`)
       );
