@@ -106,6 +106,7 @@ Three deployment environments controlled by `APP_ENV` in `.env`:
 
 ## Key Conventions
 
+- **Branch per change**: Every bug fix or feature must be implemented in a new branch — never commit directly to main
 - **Branch naming**: `feature/`, `fix/`, `refactor/`, or `doc/` prefix followed by description
 - **Stateless design**: Prefer ledger-based transactions; derive state from transaction history
 - **Integer amounts**: Use integers for financial values, not floats (accounting convention)
