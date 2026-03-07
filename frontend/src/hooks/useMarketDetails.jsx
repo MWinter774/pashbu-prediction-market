@@ -16,17 +16,9 @@ const calculateCurrentProbability = (details) => {
 
 export const useMarketDetails = () => {
   const [details, setDetails] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [token, setToken] = useState(null);
   const [currentProbability, setCurrentProbability] = useState(0);
   const { marketId } = useParams();
   const [triggerRefresh, setTriggerRefresh] = useState(false);
-
-  useEffect(() => {
-    const fetchedToken = localStorage.getItem('token');
-    setToken(fetchedToken);
-    setIsLoggedIn(!!fetchedToken);
-  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,5 +42,5 @@ export const useMarketDetails = () => {
     setTriggerRefresh((prev) => !prev);
   };
 
-  return { details, isLoggedIn, token, refetchData, currentProbability };
+  return { details, refetchData, currentProbability };
 };
