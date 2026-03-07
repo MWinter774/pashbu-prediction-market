@@ -35,8 +35,8 @@ func UploadMarketImageHandler(w http.ResponseWriter, r *http.Request) {
 
 	db := util.GetDB()
 
-	// Authenticate user
-	user, httperr := middleware.ValidateTokenAndGetUser(r, db)
+	// Authenticate user (enforce password change)
+	user, httperr := middleware.ValidateUserAndEnforcePasswordChangeGetUser(r, db)
 	if httperr != nil {
 		http.Error(w, httperr.Error(), httperr.StatusCode)
 		return
@@ -95,11 +95,22 @@ func UploadMarketImageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Validate content type
-	contentType := header.Header.Get("Content-Type")
-	ext, ok := allowedContentTypes[contentType]
+	// Detect actual content type by reading the first 512 bytes
+	buf := make([]byte, 512)
+	n, err := file.Read(buf)
+	if err != nil && err != io.EOF {
+		http.Error(w, "Failed to read file", http.StatusInternalServerError)
+		return
+	}
+	detectedType := http.DetectContentType(buf[:n])
+	ext, ok := allowedContentTypes[detectedType]
 	if !ok {
-		http.Error(w, fmt.Sprintf("Invalid content type: %s. Allowed: image/png, image/jpeg, image/webp", contentType), http.StatusBadRequest)
+		http.Error(w, fmt.Sprintf("Invalid content type: %s. Allowed: image/png, image/jpeg, image/webp", detectedType), http.StatusBadRequest)
+		return
+	}
+	// Seek back to beginning after content detection
+	if _, err := file.Seek(0, io.SeekStart); err != nil {
+		http.Error(w, "Failed to process file", http.StatusInternalServerError)
 		return
 	}
 
@@ -114,15 +125,7 @@ func UploadMarketImageHandler(w http.ResponseWriter, r *http.Request) {
 	filename := uuid.New().String() + ext
 	filePath := filepath.Join(uploadDir, filename)
 
-	// Delete old image if one exists
-	if market.ImageURL != "" {
-		oldFilename := filepath.Base(market.ImageURL)
-		oldPath := filepath.Join(uploadDir, oldFilename)
-		// Best effort delete; ignore errors if file doesn't exist
-		os.Remove(oldPath)
-	}
-
-	// Save the new file
+	// Save the new file first (before deleting old one to avoid race condition)
 	dst, err := os.Create(filePath)
 	if err != nil {
 		http.Error(w, "Failed to save image", http.StatusInternalServerError)
@@ -136,7 +139,10 @@ func UploadMarketImageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Update market ImageURL
+	// Capture old image path before updating
+	oldImageURL := market.ImageURL
+
+	// Update market ImageURL in DB
 	imageURL := "/v0/uploads/markets/" + filename
 	market.ImageURL = imageURL
 	if err := db.Save(&market).Error; err != nil {
@@ -146,16 +152,42 @@ func UploadMarketImageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Delete old image (best effort, after successful DB update)
+	if oldImageURL != "" {
+		oldFilename := filepath.Base(oldImageURL)
+		oldPath := filepath.Join(uploadDir, oldFilename)
+		os.Remove(oldPath)
+	}
+
 	// Return response
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"imageUrl": imageURL})
 }
 
+// neuteredFileSystem wraps http.FileSystem to disable directory listings.
+type neuteredFileSystem struct {
+	fs http.FileSystem
+}
+
+func (nfs neuteredFileSystem) Open(path string) (http.File, error) {
+	f, err := nfs.fs.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	s, _ := f.Stat()
+	if s.IsDir() {
+		f.Close()
+		return nil, os.ErrNotExist
+	}
+	return f, nil
+}
+
 // ServeMarketImages returns an http.Handler that serves uploaded market images.
 func ServeMarketImages() http.Handler {
 	// Strip the URL prefix and serve from the uploads directory
-	fs := http.FileServer(http.Dir("./uploads/markets"))
+	// Use neuteredFileSystem to prevent directory listing
+	fs := http.FileServer(neuteredFileSystem{http.Dir("./uploads/markets")})
 	return http.StripPrefix("/v0/uploads/markets/", fs)
 }
 
