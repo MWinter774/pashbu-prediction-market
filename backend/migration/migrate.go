@@ -91,7 +91,6 @@ func MigrateDB(db *gorm.DB) error {
 			&models.User{},
 			&models.Market{},
 			&models.Bet{},
-			&models.HomepageContent{},
 		); err != nil {
 			return fmt.Errorf("fallback AutoMigrate failed: %w", err)
 		}

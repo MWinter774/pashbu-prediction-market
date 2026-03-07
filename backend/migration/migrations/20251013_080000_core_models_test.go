@@ -13,7 +13,7 @@ func TestCoreModelsMigration_CreatesTablesAndColumns(t *testing.T) {
 	m := db.Migrator()
 
 	// Tables
-	for _, tbl := range []any{&models.User{}, &models.Market{}, &models.Bet{}, &models.HomepageContent{}} {
+	for _, tbl := range []any{&models.User{}, &models.Market{}, &models.Bet{}} {
 		if !m.HasTable(tbl) {
 			t.Fatalf("expected table for %T to exist", tbl)
 		}

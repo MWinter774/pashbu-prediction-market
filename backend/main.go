@@ -34,9 +34,6 @@ func main() {
 	}
 
 	seed.SeedUsers(db)
-	if err := seed.SeedHomepage(db, "."); err != nil {
-		log.Printf("seed homepage: warning: %v", err)
-	}
 
 	server.Start()
 }

@@ -9,8 +9,6 @@ import (
 	betshandlers "socialpredict/handlers/bets"
 	buybetshandlers "socialpredict/handlers/bets/buying"
 	sellbetshandlers "socialpredict/handlers/bets/selling"
-	"socialpredict/handlers/cms/homepage"
-	cmshomehttp "socialpredict/handlers/cms/homepage/http"
 	marketshandlers "socialpredict/handlers/markets"
 	metricshandlers "socialpredict/handlers/metrics"
 	positions "socialpredict/handlers/positions"
@@ -24,7 +22,6 @@ import (
 	"socialpredict/middleware"
 	"socialpredict/security"
 	"socialpredict/setup"
-	"socialpredict/util"
 	"strconv"
 	"strings"
 
@@ -165,16 +162,6 @@ func Start() {
 	// admin stuff - apply security middleware
 	router.Handle("/v0/users/create", securityMiddleware(http.HandlerFunc(adminhandlers.AddUserHandler(setup.EconomicsConfig)))).Methods("POST")
 	router.Handle("/v0/permissions", securityMiddleware(http.HandlerFunc(permissionshandlers.ListPermissionsHandler))).Methods("GET")
-
-	// homepage content routes
-	db := util.GetDB()
-	homepageRepo := homepage.NewGormRepository(db)
-	homepageRenderer := homepage.NewDefaultRenderer()
-	homepageSvc := homepage.NewService(homepageRepo, homepageRenderer)
-	homepageHandler := cmshomehttp.NewHandler(homepageSvc)
-
-	router.HandleFunc("/v0/content/home", homepageHandler.PublicGet).Methods("GET")
-	router.Handle("/v0/admin/content/home", securityMiddleware(http.HandlerFunc(homepageHandler.AdminUpdate))).Methods("PUT")
 
 	// Apply CORS middleware if enabled
 	handler := http.Handler(router)

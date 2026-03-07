@@ -27,11 +27,6 @@ func init() {
 			return err
 		}
 
-		// Then, migrate the HomepageContent model
-		if err := db.AutoMigrate(&models.HomepageContent{}); err != nil {
-			return err
-		}
-
 		return nil
 	})
 
