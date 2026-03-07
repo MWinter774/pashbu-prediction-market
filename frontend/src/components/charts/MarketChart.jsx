@@ -39,20 +39,24 @@ const MarketChart = ({ data, currentProbability, title, className, closeDateTime
   const generateChartData = () => {
     const chartData = [
       {
-        type: 'stepArea',
+        type: 'line',
         name: yesLabel,
-        showInLegend: false, // Never show legend to prevent chart jumping
-        color: showInverseProbability ? '#054A29' : '#17a2b8', // Green when showing both, blue when single
+        showInLegend: false,
+        color: '#22c55e',
+        lineThickness: 2,
+        markerSize: 0,
         dataPoints: generateDataPoints(data, false),
       },
     ];
 
     if (showInverseProbability) {
       chartData.push({
-        type: 'stepArea',
+        type: 'line',
         name: noLabel,
-        showInLegend: false, // Never show legend to prevent chart jumping
-        color: '#D00000', // Red color for NO (using your red-btn color)
+        showInLegend: false,
+        color: '#ef4444',
+        lineThickness: 2,
+        markerSize: 0,
         dataPoints: generateDataPoints(data, true),
       });
     }
@@ -66,28 +70,30 @@ const MarketChart = ({ data, currentProbability, title, className, closeDateTime
     zoomEnabled: true,
     axisX: {
       valueFormatString: 'DD MMM YY HH:mm',
-      labelFontColor: '#708090',
+      labelFontColor: '#8b8fa3',
     },
     axisY: {
       includeZero: true,
       minimum: 0,
       maximum: 1,
-      labelFontColor: '#708090',
-      suffix: '',
-      valueFormatString: '0.00',
+      labelFontColor: '#8b8fa3',
+      valueFormatString: ' ',
+      labelFormatter: function(e) {
+        return Math.round(e.value * 100) + '%';
+      },
     },
     data: generateChartData(),
   };
 
   return (
-    <div className={`rounded-lg shadow p-4 ${className} overflow-hidden`}>
+    <div className={`rounded-lg ${className} overflow-hidden`}>
       <div className="flex justify-between items-center mb-2">
         <h3 className='text-lg font-medium'>{title}</h3>
           <button
             onClick={() => setShowInverseProbability(!showInverseProbability)}
             className={`px-3 py-1 text-sm rounded-lg transition-colors duration-200 ${showInverseProbability
-              ? 'bg-red-btn hover:bg-red-btn-hover text-white'
-              : 'bg-custom-gray-light hover:bg-custom-gray-dark text-gray-300'}`}
+              ? 'bg-pm-no hover:bg-pm-no/80 text-white'
+              : 'bg-pm-card-border hover:bg-pm-hover text-gray-300'}`}
           >
             {showInverseProbability
               ? `Show ${yesLabel} Probability`
