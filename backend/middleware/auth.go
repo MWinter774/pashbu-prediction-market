@@ -59,6 +59,26 @@ func ValidateTokenAndGetUser(r *http.Request, db *gorm.DB) (*models.User, *HTTPE
 	return nil, &HTTPError{StatusCode: http.StatusUnauthorized, Message: "Invalid token"}
 }
 
+// ValidateUserHasPermission authenticates the user, checks password change requirement,
+// and verifies they have the specified permission.
+func ValidateUserHasPermission(r *http.Request, db *gorm.DB, permissionName string) (*models.User, *HTTPError) {
+	user, httpErr := ValidateUserAndEnforcePasswordChangeGetUser(r, db)
+	if httpErr != nil {
+		return nil, httpErr
+	}
+
+	// Load permissions for the user
+	if err := db.Model(user).Association("Permissions").Find(&user.Permissions); err != nil {
+		return nil, &HTTPError{StatusCode: http.StatusInternalServerError, Message: "Failed to load permissions"}
+	}
+
+	if !user.HasPermission(permissionName) {
+		return nil, &HTTPError{StatusCode: http.StatusForbidden, Message: "Insufficient permissions"}
+	}
+
+	return user, nil
+}
+
 // CheckMustChangePasswordFlag checks if the user needs to change their password
 func CheckMustChangePasswordFlag(user *models.User) *HTTPError {
 	if user.MustChangePassword {
