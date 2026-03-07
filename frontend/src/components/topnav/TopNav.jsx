@@ -135,20 +135,6 @@ const TopNav = () => {
         </div>
       </div>
 
-      {/* Nav links row */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center gap-6 h-10 overflow-x-auto text-sm">
-          <Link to="/polls" className="text-gray-400 hover:text-white whitespace-nowrap transition-colors">
-            Polls
-          </Link>
-          <Link to="/stats" className="text-gray-400 hover:text-white whitespace-nowrap transition-colors">
-            Stats
-          </Link>
-          <Link to="/about" className="text-gray-400 hover:text-white whitespace-nowrap transition-colors">
-            About
-          </Link>
-        </div>
-      </div>
     </nav>
   );
 };

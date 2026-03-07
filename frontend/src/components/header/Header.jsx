@@ -40,9 +40,6 @@ const MenuItems = ({ isLoggedIn, onLogout }) => {
                         <Link to="/markets" className="header-link">Markets</Link>
                     </li>
                     <li>
-                        <Link to="/polls" className="header-link">Polls</Link>
-                    </li>
-                    <li>
                         <Link to="/about" className="header-link">About</Link>
                     </li>
                 </>

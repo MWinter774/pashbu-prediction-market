@@ -4,7 +4,6 @@ import { useAuth } from './AuthContent';
 import ChangePassword from '../pages/changepassword/ChangePassword';
 import Profile from '../pages/profile/Profile';
 import Markets from '../pages/markets/Markets';
-import Polls from '../pages/polls/Polls';
 import Notifications from '../pages/notifications/Notifications';
 import Create from '../pages/create/Create';
 import About from '../pages/about/About';
@@ -41,13 +40,6 @@ const AppRoutes = () => {
           <Redirect to='/changepassword' />
         ) : (
           <MarketDetails />
-        )}
-      </Route>
-      <Route exact path='/polls'>
-        {isLoggedIn && mustChangePassword ? (
-          <Redirect to='/changepassword' />
-        ) : (
-          <Polls />
         )}
       </Route>
       <Route exact path='/user/:username'>
