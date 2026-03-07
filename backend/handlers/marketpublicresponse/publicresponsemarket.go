@@ -23,6 +23,7 @@ type PublicResponseMarket struct {
 	CreatedAt               time.Time `json:"createdAt"`
 	YesLabel                string    `json:"yesLabel"`
 	NoLabel                 string    `json:"noLabel"`
+	ImageURL                string    `json:"imageUrl"`
 }
 
 // GetPublicResponseMarketByID retrieves a market by its ID using an existing database connection,
@@ -56,6 +57,7 @@ func GetPublicResponseMarketByID(db *gorm.DB, marketId string) (PublicResponseMa
 		CreatedAt:               market.CreatedAt,
 		YesLabel:                market.YesLabel,
 		NoLabel:                 market.NoLabel,
+		ImageURL:                market.ImageURL,
 	}
 
 	return responseMarket, nil
