@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import ResolutionAlert from '../resolutions/ResolutionAlert';
 import MarketChart from '../charts/MarketChart';
-import ActivityTabs from '../../components/tabs/ActivityTabs';
+import ActivityTabs from '../tabs/ActivityTabs';
 import ResolveModalButton from '../modals/resolution/ResolveModal';
-import BetModalButton from '../modals/bet/BetModal';
+import TradeSidebar from '../trade/TradeSidebar';
 import TradeCTA from '../TradeCTA';
-import TradeTabs from '../../components/tabs/TradeTabs';
-import { BetButton } from '../buttons/trade/BetButtons';
 import formatResolutionDate from '../../helpers/formatResolutionDate';
+import { API_URL } from '../../config';
 
-function MarketDetailsTable({
+function MarketDetailsLayout({
   market,
   creator,
   numUsers,
@@ -24,184 +23,172 @@ function MarketDetailsTable({
   refetchData,
 }) {
   const [showFullDescription, setShowFullDescription] = useState(false);
-  const [showBetModal, setShowBetModal] = useState(false);
+  const [showTradeModal, setShowTradeModal] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  const toggleBetModal = () => setShowBetModal(prev => !prev);
-
   const handleTransactionSuccess = () => {
-    setShowBetModal(false);  // Close modal
-    if (refetchData) {
-      refetchData();  // Trigger data refresh
-    }
-    setRefreshTrigger(prev => prev + 1); // Trigger positions refresh
+    setShowTradeModal(false);
+    if (refetchData) refetchData();
+    setRefreshTrigger((prev) => prev + 1);
   };
 
-  const shouldShowTradeButtons = !market.isResolved && isLoggedIn && new Date(market.resolutionDateTime) > new Date();
+  const shouldShowTradeButtons =
+    !market.isResolved && isLoggedIn && new Date(market.resolutionDateTime) > new Date();
+
+  const imageUrl = market.imageUrl
+    ? `${API_URL}/v0/uploads/markets/${market.imageUrl}`
+    : null;
 
   return (
-    <div className='bg-gray-900 text-gray-300 p-4 rounded-lg shadow-lg w-full'>
+    <div className="max-w-7xl mx-auto px-4 py-6">
       <ResolutionAlert
         isResolved={market.isResolved}
         resolutionResult={market.resolutionResult}
         market={market}
       />
 
-      <div className='mb-4'>
-        <h1
-          className='text-xl font-semibold text-white mb-2 break-words line-clamp-2'
-          title={market.questionTitle}
-        >
-          {market.questionTitle}
-        </h1>
-        <div className='flex flex-wrap items-center gap-2 text-sm text-gray-400'>
-          <a
-            href={`/user/${market.creatorUsername}`}
-            className='hover:text-blue-400 transition-colors duration-200'
-          >
-            <span role='img' aria-label='Creator'>
-              {creator.personalEmoji}
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_380px] gap-6">
+        {/* Left column */}
+        <div className="min-w-0">
+          {/* Market header */}
+          <div className="flex items-start gap-4 mb-6">
+            {imageUrl && (
+              <img
+                src={imageUrl}
+                alt={market.questionTitle}
+                className="w-14 h-14 rounded-lg object-cover flex-shrink-0"
+              />
+            )}
+            <div>
+              <h1 className="text-2xl font-bold text-white leading-tight">
+                {market.questionTitle}
+              </h1>
+            </div>
+          </div>
+
+          {/* Probability display */}
+          <div className="mb-2">
+            <span className="text-3xl font-bold text-pm-yes">
+              {Math.round(currentProbability * 100)}% chance
             </span>
-            @{market.creatorUsername}
-          </a>
-          <span>•</span>
-          <span>🪙 {currentProbability.toFixed(2)}</span>
-        </div>
-      </div>
+          </div>
 
-      <div className='mb-4'>
-        <MarketChart
-          data={probabilityChanges}
-          currentProbability={currentProbability}
-          title='Probability Changes'
-          className='w-full'
-          closeDateTime={market.resolutionDateTime}
-          yesLabel={market.yesLabel}
-          noLabel={market.noLabel}
-        />
-      </div>
+          {/* Chart */}
+          <div className="mb-4">
+            <MarketChart
+              data={probabilityChanges}
+              currentProbability={currentProbability}
+              title=""
+              className="w-full"
+              closeDateTime={market.resolutionDateTime}
+              yesLabel={market.yesLabel}
+              noLabel={market.noLabel}
+            />
+          </div>
 
-      <div className='mb-4'>
-        <button
-          onClick={() => setShowFullDescription(!showFullDescription)}
-          className='w-full py-2 bg-gray-700 hover:bg-gray-600 transition-colors duration-200 rounded-lg text-center text-sm'
-        >
-          {showFullDescription ? 'Hide Description' : 'Show Full Description'}
-        </button>
-      </div>
-      <div className='mb-4 bg-gray-800 p-4 rounded-lg'>
-        <p
-          className={`text-sm break-words whitespace-pre-wrap ${
-            showFullDescription
-              ? ''
-              : 'sm:max-h-24 h-16 overflow-y-auto sm:overflow-hidden'
-          }`}
-          style={{
-            wordBreak: 'break-word',
-            overflowWrap: 'break-word',
-            hyphens: 'auto',
-          }}
-        >
-          {market.description}
-        </p>
-      </div>
+          {/* Inline stats */}
+          <div className="flex items-center gap-4 text-sm text-pm-muted mb-6">
+            <span>{Math.round(totalVolume)} Vol.</span>
+            <span>|</span>
+            <span>
+              {market.isResolved
+                ? 'Closed'
+                : formatResolutionDate(market.resolutionDateTime)}
+            </span>
+          </div>
 
-      <div className='grid grid-cols-2 sm:grid-cols-4 gap-2 text-center mb-4'>
-        {[
-          { label: 'Users', value: `${numUsers}`, icon: '👤' },
-          { 
-            label: 'Volume', 
-            value: `${Math.round(totalVolume)}`,
-            icon: '📊' 
-          },
-          { label: 'Comments', value: '0', icon: '💬' },
-          {
-            label: 'Closes',
-            value: market.isResolved
-              ? 'Closed'
-              : formatResolutionDate(market.resolutionDateTime),
-            icon: '📅',
-          },
-        ].map((item, index) => (
-          <div key={index} className='bg-gray-800 p-2 rounded-lg'>
-            <div className='text-xs text-gray-400'>{item.label}</div>
-            <div className='text-sm font-semibold truncate'>
-              {item.icon} {item.value}
+          {/* Resolve button (creator only) */}
+          {username === market.creatorUsername && !market.isResolved && (
+            <div className="mb-6">
+              <ResolveModalButton
+                marketId={marketId}
+                token={token}
+                market={market}
+                disabled={!token}
+                className="text-xs px-4 py-2"
+              />
             </div>
-          </div>
-        ))}
-      </div>
+          )}
 
-      {marketDust > 0 && (
-        <div className='grid grid-cols-2 sm:grid-cols-4 gap-2 text-center mb-4'>
-          <div className='bg-gray-800 p-2 rounded-lg'>
-            <div className='text-xs text-gray-400'>Dust</div>
-            <div className='text-sm font-semibold truncate'>
-              ✨ {marketDust}
-            </div>
+          {/* Rules section */}
+          <div className="mb-6">
+            <h2 className="text-base font-semibold text-white mb-2">Rules</h2>
+            <p
+              className={`text-sm text-gray-300 whitespace-pre-wrap break-words ${
+                showFullDescription ? '' : 'line-clamp-3'
+              }`}
+            >
+              {market.description}
+            </p>
+            {market.description && market.description.length > 200 && (
+              <button
+                onClick={() => setShowFullDescription(!showFullDescription)}
+                className="text-sm text-blue-400 hover:text-blue-300 mt-1"
+              >
+                {showFullDescription ? 'Show less' : 'Show more'}
+              </button>
+            )}
           </div>
-          <div className='bg-gray-800 p-2 rounded-lg opacity-50'>
-            <div className='text-xs text-gray-400'>—</div>
-            <div className='text-sm font-semibold truncate'>—</div>
-          </div>
-          <div className='bg-gray-800 p-2 rounded-lg opacity-50'>
-            <div className='text-xs text-gray-400'>—</div>
-            <div className='text-sm font-semibold truncate'>—</div>
-          </div>
-          <div className='bg-gray-800 p-2 rounded-lg opacity-50'>
-            <div className='text-xs text-gray-400'>—</div>
-            <div className='text-sm font-semibold truncate'>—</div>
+
+          {/* Activity tabs */}
+          <div className="mb-4">
+            <ActivityTabs
+              marketId={marketId}
+              market={market}
+              refreshTrigger={refreshTrigger}
+            />
           </div>
         </div>
-      )}
 
-      <div className='flex items-center justify-center mb-4 space-x-4 py-4'>
-        {username === market.creatorUsername && !market.isResolved && (
-          <ResolveModalButton
-            marketId={marketId}
-            token={token}
-            market={market}
-            disabled={!token}
-            className='text-xs px-4 py-2'
-          />
-        )}
-        {shouldShowTradeButtons && (
-          <div className="hidden md:block">
-            <BetButton onClick={toggleBetModal} className="text-xs px-4 py-2" />
+        {/* Right column - Trade sidebar (desktop only) */}
+        <div className="hidden md:block">
+          <div className="sticky top-6">
+            <TradeSidebar
+              market={market}
+              marketId={marketId}
+              currentProbability={currentProbability}
+              token={token}
+              isLoggedIn={isLoggedIn}
+              onTransactionSuccess={handleTransactionSuccess}
+            />
           </div>
-        )}
-      </div>
-
-      <div className='mx-auto w-full mb-4'>
-        <ActivityTabs marketId={marketId} market={market} refreshTrigger={refreshTrigger} />
+        </div>
       </div>
 
       {/* Mobile floating CTA */}
       {shouldShowTradeButtons && (
-        <TradeCTA onClick={toggleBetModal} disabled={!token} />
+        <TradeCTA onClick={() => setShowTradeModal(true)} disabled={!token} />
       )}
 
-      {/* Spacer so content doesn't sit under the CTA */}
-      <div className="h-32 md:hidden" />
-
-      {/* Shared Trade Modal */}
-      {showBetModal && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bet-modal relative bg-blue-900 p-6 rounded-lg text-white m-6 mx-auto" style={{ width: '350px' }}>
-            <TradeTabs
-              marketId={marketId}
+      {/* Mobile trade modal */}
+      {showTradeModal && (
+        <div className="fixed inset-0 bg-black/60 flex items-end md:hidden z-50">
+          <div className="w-full bg-pm-card rounded-t-2xl p-5 pb-8">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-white">Trade</h3>
+              <button
+                onClick={() => setShowTradeModal(false)}
+                className="text-gray-400 hover:text-white text-xl"
+              >
+                ✕
+              </button>
+            </div>
+            <TradeSidebar
               market={market}
+              marketId={marketId}
+              currentProbability={currentProbability}
               token={token}
+              isLoggedIn={isLoggedIn}
               onTransactionSuccess={handleTransactionSuccess}
             />
-            <button onClick={toggleBetModal} className="absolute top-0 right-0 mt-4 mr-4 text-gray-400 hover:text-white">
-              ✕
-            </button>
           </div>
         </div>
       )}
+
+      {/* Mobile spacer */}
+      <div className="h-24 md:hidden" />
     </div>
   );
 }
 
-export default MarketDetailsTable;
+export default MarketDetailsLayout;
