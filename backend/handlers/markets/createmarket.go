@@ -138,6 +138,16 @@ func CreateMarketHandler(loadEconConfig setup.EconConfigLoader) func(http.Respon
 			newMarket.NoLabel = "NO"
 		}
 
+		// Validate category — if empty, default to "General"
+		if newMarket.Category == "" {
+			newMarket.Category = "General"
+		}
+		validCategories := map[string]bool{"General": true}
+		if !validCategories[newMarket.Category] {
+			http.Error(w, "Invalid category", http.StatusBadRequest)
+			return
+		}
+
 		if err = util.CheckUserIsReal(db, newMarket.CreatorUsername); err != nil {
 			if err.Error() == "creator user not found" {
 				http.Error(w, err.Error(), http.StatusNotFound)
