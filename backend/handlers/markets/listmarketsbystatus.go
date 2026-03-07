@@ -37,7 +37,8 @@ func ListMarketsByStatusHandler(filterFunc MarketFilterFunc, statusName string) 
 		}
 
 		db := util.GetDB()
-		markets, err := ListMarketsByStatus(db, filterFunc)
+		category := r.URL.Query().Get("category")
+		markets, err := ListMarketsByStatus(db, filterFunc, category)
 		if err != nil {
 			log.Printf("Error fetching markets for status %s: %v", statusName, err)
 			http.Error(w, "Error fetching markets", http.StatusInternalServerError)
@@ -88,9 +89,12 @@ func ListMarketsByStatusHandler(filterFunc MarketFilterFunc, statusName string) 
 }
 
 // ListMarketsByStatus fetches markets from the database using the provided filter function
-func ListMarketsByStatus(db *gorm.DB, filterFunc MarketFilterFunc) ([]models.Market, error) {
+func ListMarketsByStatus(db *gorm.DB, filterFunc MarketFilterFunc, category string) ([]models.Market, error) {
 	var markets []models.Market
-	query := filterFunc(db).Order("created_at DESC").Limit(100) // Set a reasonable limit and order by most recent
+	query := filterFunc(db).Order("created_at DESC").Limit(100) // Set a reasonable limit
+	if category != "" {
+		query = query.Where("category = ?", category)
+	}
 	result := query.Find(&markets)
 	if result.Error != nil {
 		log.Printf("Error fetching filtered markets: %v", result.Error)

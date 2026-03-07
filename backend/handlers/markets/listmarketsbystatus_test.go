@@ -225,7 +225,7 @@ func TestListMarketsByStatus(t *testing.T) {
 	db.Create(&activeMarket)
 
 	// Test ListMarketsByStatus with ActiveMarketsFilter
-	markets, err := ListMarketsByStatus(db, ActiveMarketsFilter)
+	markets, err := ListMarketsByStatus(db, ActiveMarketsFilter, "")
 	if err != nil {
 		t.Errorf("Expected no error, got %v", err)
 	}
@@ -242,7 +242,7 @@ func TestListMarketsByStatusWithEmptyResults(t *testing.T) {
 	util.DB = db
 
 	// Test with no markets in database
-	markets, err := ListMarketsByStatus(db, ActiveMarketsFilter)
+	markets, err := ListMarketsByStatus(db, ActiveMarketsFilter, "")
 	if err != nil {
 		t.Errorf("Expected no error, got %v", err)
 	}

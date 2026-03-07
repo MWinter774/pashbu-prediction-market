@@ -38,7 +38,8 @@ func ListMarketsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db := util.GetDB()
-	markets, err := ListMarkets(db)
+	category := r.URL.Query().Get("category")
+	markets, err := ListMarkets(db, category)
 	if err != nil {
 		http.Error(w, "Error fetching markets", http.StatusInternalServerError)
 		return
@@ -83,9 +84,13 @@ func ListMarketsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // ListMarkets fetches a random list of all markets from the database.
-func ListMarkets(db *gorm.DB) ([]models.Market, error) {
+func ListMarkets(db *gorm.DB, category string) ([]models.Market, error) {
 	var markets []models.Market
-	result := db.Order("RANDOM()").Limit(100).Find(&markets) // Set a reasonable limit
+	query := db.Order("RANDOM()").Limit(100) // Set a reasonable limit
+	if category != "" {
+		query = query.Where("category = ?", category)
+	}
+	result := query.Find(&markets)
 	if result.Error != nil {
 		log.Printf("Error fetching markets: %v", result.Error)
 		return nil, result.Error
