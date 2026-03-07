@@ -5,8 +5,8 @@ const AuthContext = createContext({
     username: null,
     setUsername: () => {},
     isLoggedIn: false,
-    usertype: null,
-    changePasswordNeeded: true, // Default to true until login confirms otherwise
+    permissions: [],
+    changePasswordNeeded: true,
     login: () => {},
     logout: () => {},
 });
@@ -20,15 +20,9 @@ const AuthProvider = ({ children }) => {
         isLoggedIn: false,
         token: localStorage.getItem('token'),
         username: localStorage.getItem('username'),
-        usertype: localStorage.getItem('usertype'),
-        changePasswordNeeded: null  // Initialized as null
+        permissions: JSON.parse(localStorage.getItem('permissions') || '[]'),
+        changePasswordNeeded: null
     });
-
-    useEffect(() => {
-        if (authState.isLoggedIn && authState.usertype) {
-            // Redirect or perform other actions based on usertype
-        }
-    }, [authState.isLoggedIn, authState.usertype]);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -38,8 +32,7 @@ const AuthProvider = ({ children }) => {
                 isLoggedIn: true,
                 token: token,
                 username: localStorage.getItem('username'),
-                usertype: localStorage.getItem('usertype'),
-                // assume password change needed until shown not
+                permissions: JSON.parse(localStorage.getItem('permissions') || '[]'),
                 changePasswordNeeded: localStorage.getItem('changePasswordNeeded') === 'true',
             }));
         }
@@ -55,33 +48,29 @@ const AuthProvider = ({ children }) => {
                 body: JSON.stringify({ username, password }),
             });
 
-            // Read response as text first to handle both JSON and non-JSON responses
             const text = await response.text();
             let data = {};
 
-            // Safely attempt to parse JSON
             try {
                 data = JSON.parse(text);
             } catch (parseError) {
-                // If JSON parsing fails, create a basic error object
                 data = { error: text || 'Unknown error occurred' };
             }
 
             if (response.ok) {
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('username', data.username);
-                localStorage.setItem('usertype', data.usertype);
+                localStorage.setItem('permissions', JSON.stringify(data.permissions || []));
                 localStorage.setItem('changePasswordNeeded', data.mustChangePassword);
                 setAuthState({
                     isLoggedIn: true,
                     token: data.token,
                     username: data.username,
-                    usertype: data.usertype,
+                    permissions: data.permissions || [],
                     changePasswordNeeded: data.mustChangePassword,
                 });
                 return true;
             } else {
-                // Create meaningful error message based on response
                 const errorMessage = data.error || data.message || `HTTP ${response.status}: ${text}`;
                 throw new Error(errorMessage);
             }
@@ -91,14 +80,13 @@ const AuthProvider = ({ children }) => {
         }
     };
 
-
     const logout = () => {
         localStorage.clear();
         setAuthState({
             isLoggedIn: false,
             token: null,
             username: null,
-            usertype: null,
+            permissions: [],
             changePasswordNeeded: null,
         });
     };
