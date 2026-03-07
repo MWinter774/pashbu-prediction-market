@@ -93,7 +93,7 @@ const TopNav = () => {
           {/* Center: Search (hidden on mobile, shown md+) */}
           <div className="hidden md:flex flex-1 max-w-lg mx-8">
             <Link
-              to="/markets"
+              to="/"
               className="w-full px-4 py-2 bg-pm-card border border-pm-card-border rounded-full text-sm text-pm-muted hover:border-gray-500 transition-colors text-left"
             >
               Search markets...
@@ -104,7 +104,7 @@ const TopNav = () => {
           <div className="flex items-center gap-2">
             {/* Mobile search icon */}
             <Link
-              to="/markets"
+              to="/"
               className="md:hidden p-2 text-gray-400 hover:text-white"
             >
               🔍
@@ -138,12 +138,6 @@ const TopNav = () => {
       {/* Nav links row */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center gap-6 h-10 overflow-x-auto text-sm">
-          <Link to="/" className="text-gray-400 hover:text-white whitespace-nowrap transition-colors">
-            Home
-          </Link>
-          <Link to="/markets" className="text-gray-400 hover:text-white whitespace-nowrap transition-colors">
-            Markets
-          </Link>
           <Link to="/polls" className="text-gray-400 hover:text-white whitespace-nowrap transition-colors">
             Polls
           </Link>

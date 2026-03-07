@@ -9,7 +9,6 @@ import Notifications from '../pages/notifications/Notifications';
 import Create from '../pages/create/Create';
 import About from '../pages/about/About';
 import Stats from '../pages/stats/Stats';
-import Home from '../pages/home/Home';
 import MarketDetails from '../pages/marketDetails/MarketDetails';
 import User from '../pages/user/User';
 import Style from '../pages/style/Style';
@@ -42,13 +41,6 @@ const AppRoutes = () => {
           <Redirect to='/changepassword' />
         ) : (
           <MarketDetails />
-        )}
-      </Route>
-      <Route exact path='/markets'>
-        {isLoggedIn && mustChangePassword ? (
-          <Redirect to='/changepassword' />
-        ) : (
-          <Markets />
         )}
       </Route>
       <Route exact path='/polls'>
@@ -119,7 +111,7 @@ const AppRoutes = () => {
         {isLoggedIn && mustChangePassword ? (
           <Redirect to='/changepassword' />
         ) : (
-          <Home />
+          <Markets />
         )}
       </Route>
 
