@@ -104,6 +104,7 @@ function MarketDetailsLayout({
                 marketId={marketId}
                 token={token}
                 market={market}
+                onResolved={refetchData}
                 disabled={!token}
                 className="text-xs px-4 py-2"
               />
