@@ -7,8 +7,9 @@ import (
 	"gorm.io/gorm"
 )
 
+// MigrateAddMarketImage adds the ImageURL column to the markets table.
 func MigrateAddMarketImage(db *gorm.DB) error {
-	if !db.Migrator().HasColumn(&models.Market{}, "image_url") {
+	if !db.Migrator().HasColumn(&models.Market{}, "ImageURL") {
 		if err := db.Migrator().AddColumn(&models.Market{}, "ImageURL"); err != nil {
 			return err
 		}
