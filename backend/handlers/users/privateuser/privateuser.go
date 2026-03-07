@@ -15,7 +15,6 @@ type CombinedUserResponse struct {
 	// Public fields
 	Username              string `json:"username"`
 	DisplayName           string `json:"displayname"`
-	UserType              string `json:"usertype"`
 	InitialAccountBalance int64  `json:"initialAccountBalance"`
 	AccountBalance        int64  `json:"accountBalance"`
 	PersonalEmoji         string `json:"personalEmoji,omitempty"`
@@ -48,7 +47,6 @@ func GetPrivateProfileUserResponse(w http.ResponseWriter, r *http.Request) {
 		// Public fields
 		Username:              publicInfo.Username,
 		DisplayName:           publicInfo.DisplayName,
-		UserType:              publicInfo.UserType,
 		InitialAccountBalance: publicInfo.InitialAccountBalance,
 		AccountBalance:        publicInfo.AccountBalance,
 		PersonalEmoji:         publicInfo.PersonalEmoji,

@@ -30,7 +30,6 @@ func TestCalculateUserCredit(t *testing.T) {
 			PublicUser: models.PublicUser{
 				Username:       tc.username,
 				DisplayName:    tc.displayName,
-				UserType:       "REGULAR",
 				AccountBalance: tc.accountBalance,
 			},
 			PrivateUser: models.PrivateUser{

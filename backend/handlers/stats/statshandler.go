@@ -104,7 +104,7 @@ func calculateTotalMoney(db *gorm.DB) (int64, error) {
 
 	// Count the number of regular users
 	var userCount int64
-	if err := db.Model(&models.User{}).Where("user_type = ?", "REGULAR").Count(&userCount).Error; err != nil {
+	if err := db.Model(&models.User{}).Count(&userCount).Error; err != nil {
 		return 0, err // Return zero and the error if the query fails
 	}
 

@@ -15,7 +15,6 @@ func TestGetPublicUserInfo(t *testing.T) {
 		PublicUser: models.PublicUser{
 			Username:              "testuser",
 			DisplayName:           "Test User",
-			UserType:              "regular",
 			InitialAccountBalance: 1000,
 			AccountBalance:        500,
 			PersonalEmoji:         "😊",
@@ -41,7 +40,6 @@ func TestGetPublicUserInfo(t *testing.T) {
 	expectedUser := models.PublicUser{
 		Username:              "testuser",
 		DisplayName:           "Test User",
-		UserType:              "regular",
 		InitialAccountBalance: 1000,
 		AccountBalance:        500,
 		PersonalEmoji:         "😊",

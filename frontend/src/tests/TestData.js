@@ -13,7 +13,6 @@ const TestMarketData = {
     "creator":{
         "username":"user1",
         "displayname":"Eegabeep",
-        "usertype":"REGULAR",
         "initialAccountBalance":0,
         "accountBalance":0,
         "personalEmoji":"😅",

@@ -67,11 +67,14 @@ func TestAdminUpdate_Success(t *testing.T) {
 	t.Setenv("JWT_SIGNING_KEY", "test-secret-key-for-testing")
 
 	admin := modelstesting.GenerateUser("admin_user", 0)
-	admin.UserType = "ADMIN"
-	admin.MustChangePassword = false
 	if err := db.Create(&admin).Error; err != nil {
 		t.Fatalf("create admin user: %v", err)
 	}
+	db.Model(&admin).Update("must_change_password", false)
+	// Grant edit_homepage permission to admin
+	editPerm := models.Permission{Name: "edit_homepage", Description: "Edit homepage content"}
+	db.FirstOrCreate(&editPerm, models.Permission{Name: "edit_homepage"})
+	db.Model(&admin).Association("Permissions").Append(&editPerm)
 
 	item := models.HomepageContent{
 		Slug:    "home",
