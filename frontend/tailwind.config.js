@@ -63,12 +63,6 @@ export default {
       borderRadius: {
         'badge': '12px'
       },
-      spacing: {
-        'sidebar': '8rem', // more rem means sidebar thicker
-      },
-      zIndex: {
-        'sidebar': 40, // higher number means more on top
-      },
     },
   },
   plugins: [],

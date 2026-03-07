@@ -11,7 +11,6 @@ import {
 } from '../../components/buttons/marketDetails/ResolveButtons';
 import SiteButton from '../../components/buttons/SiteButtons';
 import SiteTabs from '../../components/tabs/SiteTabs';
-import Sidebar from '../../components/sidebar/Sidebar';
 import Header from '../../components/header/Header';
 import {
   RegularInput,
@@ -390,17 +389,6 @@ const Style = () => {
             <td className='px-6 py-4 text-sm text-gray-500'>Header</td>
             <td className='px-6 py-4 text-sm font-mono text-gray-500'>
               <code>{`import Header from '../../components/header/Header';`}</code>
-            </td>
-          </tr>
-          <tr>
-            <td className='px-6 py-4 '>
-              <div className='flex items-center'>
-                <Sidebar />
-              </div>
-            </td>
-            <td className='px-6 py-4  text-sm text-gray-500'>Sidebar</td>
-            <td className='px-6 py-4 text-sm font-mono text-gray-500'>
-              <code>{`import Sidebar from '../../components/sidebar/Sidebar';`}</code>
             </td>
           </tr>
           <tr>
