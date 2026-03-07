@@ -108,6 +108,7 @@ Three deployment environments controlled by `APP_ENV` in `.env`:
 
 - **Branch per change**: Every bug fix or feature must be implemented in a new branch — never commit directly to main
 - **Branch naming**: `feature/`, `fix/`, `refactor/`, or `doc/` prefix followed by description
+- **Rebase over merge**: Always use `git rebase` instead of `git merge` to integrate changes and keep a linear history
 - **Stateless design**: Prefer ledger-based transactions; derive state from transaction history
 - **Integer amounts**: Use integers for financial values, not floats (accounting convention)
 - **Public/private separation**: Separate response types for public vs authenticated data
