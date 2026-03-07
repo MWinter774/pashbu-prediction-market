@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { useHistory } from 'react-router-dom';
 import { PersonInput, LockInput } from '../../inputs/InputBar';
-import SiteButton from '../../buttons/SiteButtons';
 import { useAuth } from '../../../helpers/AuthContent';
 
 const LoginModal = ({ isOpen, onClose, onLogin, redirectAfterLogin }) => {
@@ -47,9 +46,12 @@ const LoginModal = ({ isOpen, onClose, onLogin, redirectAfterLogin }) => {
                         setPassword(e.target.value);
                     }} />
                     {error && <div className='error-message'>{error}</div>}
-                    <div className="flex items-center justify-between">
-                        <SiteButton type="submit">Login</SiteButton>
-                    </div>
+                    <button
+                        type="submit"
+                        className="w-full px-4 py-2 text-white bg-primary-pink hover:bg-pink-700 border border-transparent rounded focus:outline-none"
+                    >
+                        Login
+                    </button>
                 </form>
                 <button className="absolute top-0 right-0 mt-4 mr-4 text-gray-400 hover:text-white" onClick={onClose}>
                     ✕
