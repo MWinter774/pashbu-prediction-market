@@ -31,7 +31,7 @@ function Markets() {
         {isSearching ? (
           <SearchResultsTable searchResults={searchResults} />
         ) : (
-          <MarketsByStatusTable status={TAB_TO_STATUS[activeStatus]} useCardGrid={true} />
+          <MarketsByStatusTable status={TAB_TO_STATUS[activeStatus]} />
         )}
       </div>
     </div>
