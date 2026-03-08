@@ -54,6 +54,18 @@ const TradeSidebar = ({ market, marketId, currentProbability, token, isLoggedIn,
     }
   };
 
+  const handleAmountChange = (e) => {
+    const val = e.target.value;
+    if (val === '') {
+      setAmount(0);
+      return;
+    }
+    const parsed = parseInt(val, 10);
+    if (!isNaN(parsed) && parsed >= 0) {
+      setAmount(parsed);
+    }
+  };
+
   const handleTrade = () => {
     if (!token) {
       alert('Please log in to trade.');
@@ -154,16 +166,32 @@ const TradeSidebar = ({ market, marketId, currentProbability, token, isLoggedIn,
       {/* Amount section */}
       {canTrade && (
         <>
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm text-pm-muted">Amount</span>
-            <span className="text-2xl font-bold text-white">{amount}</span>
+          <div className="mb-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-sm text-pm-muted">Amount</span>
+                <div className="text-xs text-pm-muted">
+                  Balance {mode === 'sell'
+                    ? (selectedOutcome === 'YES' ? shares.yesSharesOwned : selectedOutcome === 'NO' ? shares.noSharesOwned : 0)
+                    : (userCredit || 0)}
+                </div>
+              </div>
+              <input
+                ref={amountRef}
+                type="text"
+                inputMode="numeric"
+                value={amount === 0 ? '' : amount}
+                onChange={handleAmountChange}
+                placeholder="0"
+                className="text-2xl font-bold text-right bg-transparent text-white outline-none w-24 placeholder-pm-muted"
+              />
+            </div>
           </div>
 
           <div className="flex gap-2 mb-5">
-            {[1, 5, 10, 100].map((val, idx) => (
+            {[1, 5, 10, 100].map((val) => (
               <button
                 key={val}
-                ref={idx === 0 ? amountRef : undefined}
                 className="flex-1 py-2 text-sm font-medium bg-pm-card-border rounded-lg text-white hover:bg-pm-hover transition-colors"
                 onClick={() => handleQuickAdd(val)}
               >
