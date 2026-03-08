@@ -1,13 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useMarketLabels } from '../../hooks/useMarketLabels';
 import { submitBet, fetchUserShares, submitSale } from '../layouts/trade/TradeUtils';
 import useUserCredit from '../utils/userFinanceTools/FetchUserCredit';
 import { useAuth } from '../../helpers/AuthContent';
 
 const TradeSidebar = ({ market, marketId, currentProbability, token, isLoggedIn, onTransactionSuccess }) => {
+  const location = useLocation();
+  const sideParam = new URLSearchParams(location.search).get('side');
+  const initialOutcome = sideParam === 'yes' ? 'YES' : sideParam === 'no' ? 'NO' : null;
+
   const [mode, setMode] = useState('buy'); // 'buy' or 'sell'
-  const [selectedOutcome, setSelectedOutcome] = useState(null);
+  const [selectedOutcome, setSelectedOutcome] = useState(initialOutcome);
   const [amount, setAmount] = useState(0);
+  const amountRef = useRef(null);
   const [shares, setShares] = useState({ noSharesOwned: 0, yesSharesOwned: 0 });
   const { yesLabel, noLabel } = useMarketLabels(market);
   const { username } = useAuth();
@@ -25,6 +31,12 @@ const TradeSidebar = ({ market, marketId, currentProbability, token, isLoggedIn,
         .catch(() => setShares({ noSharesOwned: 0, yesSharesOwned: 0 }));
     }
   }, [mode, marketId, token]);
+
+  useEffect(() => {
+    if (initialOutcome && amountRef.current) {
+      amountRef.current.focus();
+    }
+  }, [initialOutcome]);
 
   const yesPrice = Math.round(currentProbability * 100);
   const noPrice = 100 - yesPrice;
@@ -148,9 +160,10 @@ const TradeSidebar = ({ market, marketId, currentProbability, token, isLoggedIn,
           </div>
 
           <div className="flex gap-2 mb-5">
-            {[1, 5, 10, 100].map((val) => (
+            {[1, 5, 10, 100].map((val, idx) => (
               <button
                 key={val}
+                ref={idx === 0 ? amountRef : undefined}
                 className="flex-1 py-2 text-sm font-medium bg-pm-card-border rounded-lg text-white hover:bg-pm-hover transition-colors"
                 onClick={() => handleQuickAdd(val)}
               >
