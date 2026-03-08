@@ -101,22 +101,22 @@ const TradeSidebar = ({ market, marketId, currentProbability, token, isLoggedIn,
     <div className="bg-pm-card rounded-xl border border-pm-card-border p-5">
       {/* Buy/Sell toggle */}
       {canTrade && (
-        <div className="flex mb-4">
+        <div className="flex gap-6 mb-4 border-b border-pm-card-border">
           <button
-            className={`flex-1 py-2 text-sm font-semibold rounded-l-lg transition-colors ${
+            className={`pb-2 text-sm font-semibold transition-colors ${
               mode === 'buy'
-                ? 'bg-white text-black'
-                : 'bg-transparent text-pm-muted hover:text-white'
+                ? 'text-white border-b-2 border-white'
+                : 'text-pm-muted hover:text-white'
             }`}
             onClick={() => setMode('buy')}
           >
             Buy
           </button>
           <button
-            className={`flex-1 py-2 text-sm font-semibold rounded-r-lg transition-colors ${
+            className={`pb-2 text-sm font-semibold transition-colors ${
               mode === 'sell'
-                ? 'bg-white text-black'
-                : 'bg-transparent text-pm-muted hover:text-white'
+                ? 'text-white border-b-2 border-white'
+                : 'text-pm-muted hover:text-white'
             }`}
             onClick={() => setMode('sell')}
           >
