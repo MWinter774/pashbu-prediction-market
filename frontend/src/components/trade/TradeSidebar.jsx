@@ -109,6 +109,11 @@ const TradeSidebar = ({ market, marketId, currentProbability, token, isLoggedIn,
   const isExpired = new Date(market.resolutionDateTime) <= new Date();
   const canTrade = isLoggedIn && !isResolved && !isExpired;
 
+  const outcomeLabel = selectedOutcome === 'YES' ? yesLabel : selectedOutcome === 'NO' ? noLabel : '';
+  const buttonText = selectedOutcome
+    ? `${mode === 'buy' ? 'Buy' : 'Sell'} ${outcomeLabel}`
+    : mode === 'buy' ? 'Buy' : 'Sell';
+
   return (
     <div className="bg-pm-card rounded-xl border border-pm-card-border p-5">
       {/* Buy/Sell toggle */}
@@ -207,11 +212,11 @@ const TradeSidebar = ({ market, marketId, currentProbability, token, isLoggedIn,
           </div>
 
           <button
-            className="w-full py-3 rounded-xl text-base font-bold bg-pm-yes text-white hover:bg-pm-yes/90 transition-colors disabled:opacity-50"
+            className="w-full py-3 rounded-xl text-base font-bold bg-pm-blue text-white hover:bg-pm-blue-hover transition-colors disabled:opacity-50"
             onClick={handleTrade}
             disabled={!selectedOutcome || amount < 1}
           >
-            Trade
+            {buttonText}
           </button>
         </>
       )}
