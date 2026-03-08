@@ -80,7 +80,7 @@ sp_up() {
 }
 
 sp_down() {
-  docker compose "${COMPOSE_FILES[@]}" ${ENV_FILE} down -v
+  docker compose "${COMPOSE_FILES[@]}" ${ENV_FILE} down
 }
 
 sp_exec() {
