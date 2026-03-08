@@ -82,9 +82,7 @@ const TradeSidebar = ({ market, marketId, currentProbability, token, isLoggedIn,
         token,
         (data) => {
           alert(`Trade placed! ID: ${data.id}`);
-          setAmount(0);
-          setSelectedOutcome(null);
-          if (onTransactionSuccess) onTransactionSuccess();
+          window.location.reload();
         },
         (error) => alert(`Trade failed: ${error.message}`)
       );
@@ -96,9 +94,7 @@ const TradeSidebar = ({ market, marketId, currentProbability, token, isLoggedIn,
         token,
         (data) => {
           alert(`Sale complete! ID: ${data.id}`);
-          setAmount(0);
-          setSelectedOutcome(null);
-          if (onTransactionSuccess) onTransactionSuccess();
+          window.location.reload();
         },
         (error) => alert(`Sale failed: ${error.message}`)
       );
