@@ -106,9 +106,10 @@ Three deployment environments controlled by `APP_ENV` in `.env`:
 
 ## Key Conventions
 
-- **Branch per change**: Every bug fix or feature must be implemented in a new branch — never commit directly to main
+- **Branch per change**: Every bug fix or feature must be implemented in a new branch — never commit directly to main. **Create and checkout the new branch FIRST**, before any brainstorming, planning, or implementation work begins
 - **Branch naming**: `feature/`, `fix/`, `refactor/`, or `doc/` prefix followed by description
-- **Rebase over merge**: Always use `git rebase` instead of `git merge` to integrate changes and keep a linear history
+- **Never delete branches**: Do not delete branches with `git branch -d` or `git branch -D`. Branches should be preserved for history
+- **Rebase over merge**: ALWAYS use `git rebase` instead of `git merge` to integrate changes and keep a linear history. When suggesting commands to the user, always suggest rebase — never merge
 - **Stateless design**: Prefer ledger-based transactions; derive state from transaction history
 - **Integer amounts**: Use integers for financial values, not floats (accounting convention)
 - **Public/private separation**: Separate response types for public vs authenticated data
