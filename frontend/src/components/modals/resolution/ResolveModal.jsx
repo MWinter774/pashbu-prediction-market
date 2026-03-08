@@ -37,13 +37,9 @@ const ResolveModalButton = ({ marketId, token, market, onResolved }) => {
                     <div className="resolve-modal relative bg-blue-900 p-6 rounded-lg text-white m-6 mx-auto" style={{ width: '350px' }}>
                         <h2 className="text-xl mb-4">Resolve Market</h2>
 
-                        <div className="flex justify-center space-x-4 mb-4">
-                            <div>
-                                <SelectYesButton onClick={handleSelectYes} isSelected={selectedResolution === 'YES'} label={yesLabel} />
-                            </div>
-                            <div>
-                                <SelectNoButton onClick={handleSelectNo} isSelected={selectedResolution === 'NO'} label={noLabel} />
-                            </div>
+                        <div className="flex gap-3 mb-4">
+                            <SelectYesButton onClick={handleSelectYes} isSelected={selectedResolution === 'YES'} label={yesLabel} />
+                            <SelectNoButton onClick={handleSelectNo} isSelected={selectedResolution === 'NO'} label={noLabel} />
                         </div>
 
                         <div className="border-t border-gray-200 my-2"></div>

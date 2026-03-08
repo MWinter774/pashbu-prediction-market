@@ -12,10 +12,14 @@ const ResolveButton = ({ onClick }) => {
     );
 };
 
-const SelectNoButton = ({ onClick, label = "NO" }) => {
+const SelectNoButton = ({ onClick, isSelected, label = "NO" }) => {
     return (
         <button
-            className={`${buttonBaseStyle} bg-red-btn hover:bg-red-btn-hover`}
+            className={`flex-1 py-3 rounded-xl text-base font-bold transition-colors ${
+                isSelected
+                    ? 'bg-pm-no text-white'
+                    : 'bg-pm-no/15 text-pm-no hover:bg-pm-no/25'
+            }`}
             onClick={onClick}
         >
             RESOLVE {label}
@@ -23,10 +27,14 @@ const SelectNoButton = ({ onClick, label = "NO" }) => {
     );
 };
 
-const SelectYesButton = ({ onClick, label = "YES" }) => {
+const SelectYesButton = ({ onClick, isSelected, label = "YES" }) => {
     return (
         <button
-            className={`${buttonBaseStyle} bg-green-btn hover:bg-green-btn-hover`}
+            className={`flex-1 py-3 rounded-xl text-base font-bold transition-colors ${
+                isSelected
+                    ? 'bg-pm-yes text-white'
+                    : 'bg-pm-yes/15 text-pm-yes hover:bg-pm-yes/25'
+            }`}
             onClick={onClick}
         >
             RESOLVE {label}
@@ -38,11 +46,11 @@ const ConfirmResolveButton = ({ onClick, selectedResolution, yesLabel = "YES", n
     const getButtonStyle = () => {
         switch (selectedResolution) {
             case 'NO':
-                return "bg-red-btn hover:bg-red-btn-hover";
+                return "bg-pm-no hover:bg-pm-no/80";
             case 'YES':
-                return "bg-green-btn hover:bg-green-btn-hover";
+                return "bg-pm-yes hover:bg-pm-yes/80";
             default:
-                return "";
+                return "bg-pm-blue hover:bg-pm-blue-hover";
         }
     };
 
@@ -59,7 +67,7 @@ const ConfirmResolveButton = ({ onClick, selectedResolution, yesLabel = "YES", n
 
     return (
         <button
-            className={`${buttonBaseStyle} ${getButtonStyle()}`}
+            className={`w-full py-3 rounded-xl text-base font-bold transition-colors text-white ${getButtonStyle()}`}
             onClick={onClick}
         >
             {buttonText()}
