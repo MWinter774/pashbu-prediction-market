@@ -1,8 +1,9 @@
 import { API_URL } from '../../../../config';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'; // Import Link
+import { mapInternalToDisplay } from '../../../../utils/labelMapping';
 
-const BetsActivityLayout = ({ marketId, refreshTrigger }) => {
+const BetsActivityLayout = ({ marketId, market, refreshTrigger }) => {
     const [bets, setBets] = useState([]);
 
     useEffect(() => {
@@ -42,7 +43,7 @@ const BetsActivityLayout = ({ marketId, refreshTrigger }) => {
                     {/* Outcome */}
                     <div className="justify-self-start sm:justify-self-center">
                         <span className={`px-2 py-1 rounded text-xs font-bold ${bet.outcome === 'YES' ? 'bg-green-600' : 'bg-red-600'} text-white`}>
-                            {bet.outcome}
+                            {mapInternalToDisplay(bet.outcome, market)}
                         </span>
                     </div>
 

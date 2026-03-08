@@ -7,8 +7,8 @@ import LeaderboardActivity from '../layouts/activity/leaderboard/LeaderboardActi
 const ActivityTabs = ({ marketId, market, refreshTrigger }) => {
     const tabsData = [
         { label: 'Positions', content: <PositionsActivityLayout marketId={marketId} market={market} refreshTrigger={refreshTrigger} /> },
-        { label: 'Bets', content: <BetsActivityLayout marketId={marketId} refreshTrigger={refreshTrigger} /> },
-        { label: 'Leaderboard', content: <LeaderboardActivity marketId={marketId} market={market} /> },
+        { label: 'Bets', content: <BetsActivityLayout marketId={marketId} market={market} refreshTrigger={refreshTrigger} /> },
+        { label: 'Leaderboard', content: <LeaderboardActivity marketId={marketId} market={market} refreshTrigger={refreshTrigger} /> },
         { label: 'Comments', content: <div>Comments Go here...</div> },
     ];
 

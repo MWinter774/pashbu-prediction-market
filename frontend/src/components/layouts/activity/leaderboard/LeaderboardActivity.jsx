@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getMarketLabels } from '../../../../utils/labelMapping';
 
-const LeaderboardActivity = ({ marketId, market }) => {
+const LeaderboardActivity = ({ marketId, market, refreshTrigger }) => {
     const [leaderboard, setLeaderboard] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -31,7 +31,7 @@ const LeaderboardActivity = ({ marketId, market }) => {
         if (marketId) {
             fetchLeaderboard();
         }
-    }, [marketId]);
+    }, [marketId, refreshTrigger]);
 
     const formatCurrency = (amount) => {
         return amount.toLocaleString();
