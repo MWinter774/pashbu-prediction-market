@@ -59,6 +59,10 @@ export default {
         'pm-yes': '#22c55e',
         'pm-no': '#ef4444',
         'pm-hover': '#252a3a',
+        'pm-blue': {
+          DEFAULT: '#2d7cf6',
+          hover: '#2563eb',
+        },
       },
       borderRadius: {
         'badge': '12px'

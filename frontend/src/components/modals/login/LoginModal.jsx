@@ -48,7 +48,7 @@ const LoginModal = ({ isOpen, onClose, onLogin, redirectAfterLogin }) => {
                     {error && <div className='error-message'>{error}</div>}
                     <button
                         type="submit"
-                        className="w-full px-4 py-2 text-white bg-primary-pink hover:bg-pink-700 border border-transparent rounded focus:outline-none"
+                        className="w-full px-4 py-2 text-white bg-pm-blue hover:bg-pm-blue-hover border border-transparent rounded-lg focus:outline-none"
                     >
                         Login
                     </button>

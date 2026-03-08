@@ -1,13 +1,12 @@
 import React from 'react';
 
-// Existing Emoji Button
 const ProfileEditButton = ({ onClick, children, isSelected }) => {
-    const initialButtonStyle = "bg-custom-gray-light border-transparent";
-    const selectedButtonStyle = "bg-primary-pink border-transparent";
+    const selectedStyle = "bg-pm-blue border-transparent";
+    const unselectedStyle = "bg-pm-card border-pm-card-border";
 
     return (
         <button
-            className={`p-1 rounded-sm text-lg ${isSelected ? selectedButtonStyle : initialButtonStyle} flex items-center justify-center`}
+            className={`p-1 rounded-lg text-lg ${isSelected ? selectedStyle : unselectedStyle} flex items-center justify-center`}
             onClick={onClick}
         >
             {children}

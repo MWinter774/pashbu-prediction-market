@@ -1,4 +1,4 @@
-export const buttonBaseStyle = "w-full px-4 py-2 text-white border rounded focus:outline-none";
+export const buttonBaseStyle = "w-full px-4 py-2 text-white bg-pm-blue hover:bg-pm-blue-hover border border-transparent rounded-lg focus:outline-none";
 // const buttonBaseStyle = "w-full px-4 py-2 text-white border border-transparent rounded focus:outline-none focus:ring-2 focus:ring-offset-2";
 const yesButtonStyle = `bg-green-btn hover:bg-green-btn-hover`;
 const yesButtonHoverStyle = `bg-green-btn-hover hover:bg-green-btn`;

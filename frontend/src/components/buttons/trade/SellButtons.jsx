@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { buttonBaseStyle } from '../BaseButton';
 import { NumberInput } from '../../inputs/InputBar';
 
@@ -75,24 +75,13 @@ const ConfirmSaleButton = ({ onClick, selectedDirection }) => {
             case 'YES':
                 return "bg-green-btn hover:bg-green-btn";
             default:
-                return "bg-custom-gray-light";
-        }
-    };
-
-    const buttonText = () => {
-        switch (selectedDirection) {
-            case 'NO':
-                return "CONFIRM SALE";
-            case 'YES':
-                return "CONFIRM SALE";
-            default:
-                return "CONFIRM SALE";
+                return "";
         }
     };
 
     return (
         <button
-            className={`w-full px-4 py-2 text-white border rounded focus:outline-none ${getButtonStyle()}`}
+            className={`${buttonBaseStyle} ${getButtonStyle()}`}
             onClick={onClick}
         >
             {buttonText()}

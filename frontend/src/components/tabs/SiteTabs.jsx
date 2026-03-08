@@ -5,7 +5,7 @@ const tabBaseStyle = "px-4 py-2 text-sm font-medium text-center cursor-pointer";
 // Styles for the non-selected tabs
 const tabInactiveStyle = "text-white bg-custom-gray-light border-transparent";
 // Styles for the selected tab
-const tabActiveStyle = "text-white bg-primary-pink";
+const tabActiveStyle = "text-white bg-pm-blue";
 
 const SiteTabs = ({ tabs, onTabChange, defaultTab, activeTab }) => {
     const [internalActiveTab, setInternalActiveTab] = useState(defaultTab || tabs[0].label);

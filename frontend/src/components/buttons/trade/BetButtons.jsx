@@ -1,23 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { buttonBaseStyle } from '../BaseButton';
 import { NumberInput } from '../../inputs/InputBar';
 
-// Toggle buttons between initial and selected states
 const BetButton = ({ onClick }) => {
-    const [isSelected, setIsSelected] = useState(false);
-    const initialButtonStyle = "bg-custom-gray-light";
-    const selectedButtonStyle = "bg-neutral-btn";
-    const buttonBaseStyle = "w-full px-4 py-2 text-white border rounded focus:outline-none";
-
-    const handleClick = () => {
-        setIsSelected(!isSelected);
-        onClick && onClick();
-    };
-
     return (
         <button
-            className={`${buttonBaseStyle} ${isSelected ? selectedButtonStyle : initialButtonStyle} min-w-32 text-xs sm:text-sm md:text-base`}
-            onClick={handleClick}
+            className={`${buttonBaseStyle} min-w-32 text-xs sm:text-sm md:text-base`}
+            onClick={onClick}
         >
             TRADE
         </button>
@@ -27,7 +16,7 @@ const BetButton = ({ onClick }) => {
 const BetNoButton = ({ onClick, label = "NO" }) => {
     return (
         <button
-        className={`${buttonBaseStyle} bg-custom-gray-light hover:bg-red-btn`}
+            className={`${buttonBaseStyle} bg-red-btn hover:bg-red-btn-hover`}
             onClick={onClick}
         >
             {label}
@@ -38,7 +27,7 @@ const BetNoButton = ({ onClick, label = "NO" }) => {
 const BetYesButton = ({ onClick, label = "YES" }) => {
     return (
         <button
-        className={`${buttonBaseStyle} bg-custom-gray-light hover:bg-green-btn`}
+            className={`${buttonBaseStyle} bg-green-btn hover:bg-green-btn-hover`}
             onClick={onClick}
         >
             {label}
@@ -59,11 +48,11 @@ const ConfirmBetButton = ({ onClick, selectedDirection, yesLabel = "YES", noLabe
     const getButtonStyle = () => {
         switch (selectedDirection) {
             case 'NO':
-                return "bg-red-btn hover:bg-red-btn";
+                return "bg-red-btn hover:bg-red-btn-hover";
             case 'YES':
-                return "bg-green-btn hover:bg-green-btn";
+                return "bg-green-btn hover:bg-green-btn-hover";
             default:
-                return "bg-custom-gray-light";
+                return "";
         }
     };
 
@@ -80,14 +69,12 @@ const ConfirmBetButton = ({ onClick, selectedDirection, yesLabel = "YES", noLabe
 
     return (
         <button
-            className={`w-full px-4 py-2 text-white border rounded focus:outline-none ${getButtonStyle()}`}
+            className={`${buttonBaseStyle} ${getButtonStyle()}`}
             onClick={onClick}
         >
             {buttonText()}
         </button>
     );
 };
-
-
 
 export { BetButton, BetYesButton, BetNoButton, BetInputAmount, ConfirmBetButton };

@@ -1,21 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { buttonBaseStyle } from '../BaseButton';
 
-// Toggle buttons between initial and selected states
 const ResolveButton = ({ onClick }) => {
-    const [isSelected, setIsSelected] = useState(false);
-    const initialButtonStyle = "bg-custom-gray-light";
-    const selectedButtonStyle = "bg-neutral-btn";
-
-    const handleClick = () => {
-        setIsSelected(!isSelected);
-        onClick && onClick();
-    };
-
     return (
         <button
-            className={`${buttonBaseStyle} ${isSelected ? selectedButtonStyle : initialButtonStyle} min-w-32 text-xs sm:text-sm md:text-base`}
-            onClick={handleClick}
+            className={`${buttonBaseStyle} min-w-32 text-xs sm:text-sm md:text-base`}
+            onClick={onClick}
         >
             RESOLVE
         </button>
@@ -25,7 +15,7 @@ const ResolveButton = ({ onClick }) => {
 const SelectNoButton = ({ onClick, label = "NO" }) => {
     return (
         <button
-            className={`${buttonBaseStyle} bg-custom-gray-light hover:bg-red-btn`}
+            className={`${buttonBaseStyle} bg-red-btn hover:bg-red-btn-hover`}
             onClick={onClick}
         >
             RESOLVE {label}
@@ -36,7 +26,7 @@ const SelectNoButton = ({ onClick, label = "NO" }) => {
 const SelectYesButton = ({ onClick, label = "YES" }) => {
     return (
         <button
-            className={`${buttonBaseStyle} bg-custom-gray-light hover:bg-green-btn`}
+            className={`${buttonBaseStyle} bg-green-btn hover:bg-green-btn-hover`}
             onClick={onClick}
         >
             RESOLVE {label}
@@ -44,16 +34,15 @@ const SelectYesButton = ({ onClick, label = "YES" }) => {
     );
 };
 
-
 const ConfirmResolveButton = ({ onClick, selectedResolution, yesLabel = "YES", noLabel = "NO" }) => {
     const getButtonStyle = () => {
         switch (selectedResolution) {
             case 'NO':
-                return "bg-red-btn hover:bg-red-btn";
+                return "bg-red-btn hover:bg-red-btn-hover";
             case 'YES':
-                return "bg-green-btn hover:bg-green-btn";
+                return "bg-green-btn hover:bg-green-btn-hover";
             default:
-                return "bg-custom-gray-light";
+                return "";
         }
     };
 
@@ -70,7 +59,7 @@ const ConfirmResolveButton = ({ onClick, selectedResolution, yesLabel = "YES", n
 
     return (
         <button
-            className={`w-full px-4 py-2 text-white border rounded focus:outline-none ${getButtonStyle()}`}
+            className={`${buttonBaseStyle} ${getButtonStyle()}`}
             onClick={onClick}
         >
             {buttonText()}

@@ -91,7 +91,7 @@ const MarketSearch = () => {
                         <button
                             type="submit"
                             disabled={!searchQuery.trim() || loading}
-                            className="px-4 py-2 bg-primary-pink text-white rounded-lg hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-primary-pink focus:ring-offset-2 focus:ring-offset-custom-gray-dark disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="px-4 py-2 bg-pm-blue text-white rounded-lg hover:bg-pm-blue-hover focus:outline-none focus:ring-2 focus:ring-pm-blue focus:ring-offset-2 focus:ring-offset-custom-gray-dark disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {loading ? 'Searching...' : 'Search'}
                         </button>
