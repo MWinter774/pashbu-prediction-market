@@ -64,3 +64,6 @@ docker-compose.override.yml
 
 # Reference screenshots
 *.png
+
+# Git worktrees
+.worktrees/
