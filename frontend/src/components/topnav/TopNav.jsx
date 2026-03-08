@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../helpers/AuthContent';
 import useUserCredit from '../utils/userFinanceTools/FetchUserCredit';
 import LoginModalButton from '../modals/login/LoginModalClick';
+import NavSearchDropdown from '../search/NavSearchDropdown';
 
 const UserMenu = ({ username, permissions, userCredit, onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -152,25 +153,13 @@ const TopNav = () => {
             SocialPredict
           </Link>
 
-          {/* Center: Search (hidden on mobile, shown md+) */}
+          {/* Center: Search */}
           <div className="hidden md:flex flex-1 max-w-lg mx-8">
-            <Link
-              to="/"
-              className="w-full px-4 py-2 bg-pm-card border border-pm-card-border rounded-full text-sm text-pm-muted hover:border-gray-500 transition-colors text-left"
-            >
-              Search markets...
-            </Link>
+            <NavSearchDropdown />
           </div>
 
           {/* Right: Auth */}
           <div className="flex items-center gap-2">
-            {/* Mobile search icon */}
-            <Link
-              to="/"
-              className="md:hidden p-2 text-gray-400 hover:text-white"
-            >
-              🔍
-            </Link>
 
             {!isLoggedIn ? (
               <div className="flex items-center gap-2">
