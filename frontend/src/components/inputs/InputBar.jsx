@@ -10,7 +10,7 @@ const RegularInput = ({ value, onChange, placeholder, type = 'text', id, name, a
             id={id}
             name={name}
             autoComplete={autoComplete}
-            className="w-full px-4 py-2 border-2 border-blue-500 rounded-md text-white bg-transparent focus:outline-none"
+            className="w-full px-4 py-2 border border-pm-card-border bg-pm-page rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-gray-500"
         />
     );
 };
@@ -22,20 +22,20 @@ const NumberInput = ({ value, onChange }) => {
             type="number"
             value={value}
             onChange={onChange}
-            className="w-full px-4 py-2 border-2 border-blue-500 rounded-md text-white bg-transparent focus:outline-none"
+            className="w-full px-4 py-2 border border-pm-card-border bg-pm-page rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-gray-500"
         />
     );
 };
 
 const SuccessInput = ({ value, onChange }) => {
     return (
-    <div className="flex items-center border-2 border-green-500 bg-transparent rounded-md">
+    <div className="flex items-center border border-green-500 bg-pm-page rounded-lg">
         <input
         type="text"
         placeholder="Success"
         value={value}
         onChange={onChange}
-        className="flex-1 px-4 py-2 rounded-md text-white bg-transparent focus:outline-none"
+        className="flex-1 px-4 py-2 rounded-lg text-white bg-transparent focus:outline-none"
         />
         <span className="h-5 w-5 text-green-500 mr-2">✓</span>
     </div>
@@ -44,13 +44,13 @@ const SuccessInput = ({ value, onChange }) => {
 
 const ErrorInput = ({ value, onChange }) => {
     return (
-    <div className="flex items-center border-2 border-red-500 bg-transparent rounded-md">
+    <div className="flex items-center border border-red-500 bg-pm-page rounded-lg">
         <input
         type="text"
         placeholder="Error Input"
         value={value}
         onChange={onChange}
-        className="flex-1 px-4 py-2 rounded-md text-white bg-transparent focus:outline-none"
+        className="flex-1 px-4 py-2 rounded-lg text-white bg-transparent focus:outline-none"
         />
         <span className="h-5 w-5 text-red-500 mr-2">✗</span>
     </div>
@@ -59,31 +59,25 @@ const ErrorInput = ({ value, onChange }) => {
 
 const PersonInput = ({ value, onChange }) => {
     return (
-    <div className="flex items-center border-2 border-blue-500 bg-transparent rounded-md">
-        <span className="h-5 w-5 text-blue-500 ml-2">👤</span>
         <input
-        type="text"
-        placeholder="Username"
-        value={value}
-        onChange={onChange}
-        className="flex-1 px-4 py-2 rounded-md text-white bg-transparent focus:outline-none"
+            type="text"
+            placeholder="Username"
+            value={value}
+            onChange={onChange}
+            className="w-full px-4 py-2 border border-pm-card-border bg-pm-page rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-gray-500"
         />
-    </div>
     );
 };
 
 const LockInput = ({ value, onChange }) => {
     return (
-    <div className="flex items-center border-2 border-blue-500 bg-transparent rounded-md">
-        <span className="h-5 w-5 text-blue-500 ml-2">🔒</span>
         <input
-        type="password"
-        placeholder="Password"
-        value={value}
-        onChange={onChange}
-        className="flex-1 px-4 py-2 rounded-md text-white bg-transparent focus:outline-none"
+            type="password"
+            placeholder="Password"
+            value={value}
+            onChange={onChange}
+            className="w-full px-4 py-2 border border-pm-card-border bg-pm-page rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-gray-500"
         />
-    </div>
     );
 };
 
