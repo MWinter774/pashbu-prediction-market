@@ -4,6 +4,7 @@ import { useAuth } from '../../helpers/AuthContent';
 import useUserCredit from '../utils/userFinanceTools/FetchUserCredit';
 import LoginModalButton from '../modals/login/LoginModalClick';
 import NavSearchDropdown from '../search/NavSearchDropdown';
+import FilterBar from './FilterBar';
 
 const UserMenu = ({ username, permissions, userCredit, onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -215,7 +216,7 @@ const TopNav = () => {
           </div>
         </div>
       </div>
-
+      <FilterBar />
     </nav>
   );
 };
