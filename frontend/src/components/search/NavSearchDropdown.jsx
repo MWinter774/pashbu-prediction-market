@@ -132,7 +132,10 @@ const NavSearchDropdown = () => {
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-pm-card border border-pm-card-border rounded-lg shadow-lg overflow-hidden z-50">
+        <div
+          className="absolute top-full left-0 right-0 mt-2 bg-pm-card border border-pm-card-border rounded-lg shadow-lg overflow-hidden z-50"
+          onMouseDown={(e) => e.preventDefault()}
+        >
           {/* Browse mode: categories */}
           {!hasQuery && (
             <div className="p-2">
