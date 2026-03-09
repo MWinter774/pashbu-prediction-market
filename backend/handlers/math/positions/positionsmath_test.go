@@ -154,7 +154,8 @@ func TestCalculateMarketPositions_IncludesZeroPositionUsers(t *testing.T) {
 		t.Fatalf("expected zero-position user to be present in positions")
 	}
 
-	if lockedUser.YesSharesOwned != 0 || lockedUser.NoSharesOwned != 0 || lockedUser.Value != 0 {
-		t.Fatalf("expected zero shares/value for locked user, got %+v", lockedUser)
+	// After EnsureMinimumPayouts, the last bettor gets at least 1 share on their bet side
+	if lockedUser.YesSharesOwned < 1 {
+		t.Fatalf("expected last bettor to have at least 1 YES share, got %+v", lockedUser)
 	}
 }

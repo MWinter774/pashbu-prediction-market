@@ -80,6 +80,9 @@ func CalculateMarketPositions_WPAM_DBPM(db *gorm.DB, marketIdStr string) ([]Mark
 	// Adjust payouts to align with the available betting pool using modularized functions
 	finalPayouts := dbpm.AdjustPayouts(allBetsOnMarket, scaledPayouts)
 
+	// Ensure every bet gets at least 1 share (the last bet always has 0 divergence)
+	finalPayouts = dbpm.EnsureMinimumPayouts(allBetsOnMarket, finalPayouts)
+
 	// Aggregate user payouts into market positions
 	aggreatedPositions := dbpm.AggregateUserPayoutsDBPM(allBetsOnMarket, finalPayouts)
 

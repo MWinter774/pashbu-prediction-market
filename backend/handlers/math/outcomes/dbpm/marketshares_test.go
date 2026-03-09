@@ -738,6 +738,89 @@ func TestNetAggregateMarketPositions(t *testing.T) {
 	}
 }
 
+func TestEnsureMinimumPayouts(t *testing.T) {
+	testcases := []struct {
+		Name           string
+		Bets           []models.Bet
+		Payouts        []int64
+		ExpectedResult []int64
+	}{
+		{
+			Name:           "EmptyBets",
+			Bets:           []models.Bet{},
+			Payouts:        []int64{},
+			ExpectedResult: []int64{},
+		},
+		{
+			Name: "AllNonZero",
+			Bets: []models.Bet{
+				modelstesting.GenerateBet(10, "YES", "one", 1, 0),
+				modelstesting.GenerateBet(10, "NO", "two", 1, time.Minute),
+			},
+			Payouts:        []int64{5, 5},
+			ExpectedResult: []int64{5, 5},
+		},
+		{
+			Name: "LastBetZeroWithDonorOnSameSide",
+			Bets: []models.Bet{
+				modelstesting.GenerateBet(20, "NO", "one", 1, 0),
+				modelstesting.GenerateBet(10, "YES", "two", 1, time.Minute),
+				modelstesting.GenerateBet(10, "YES", "three", 1, 2*time.Minute),
+			},
+			Payouts:        []int64{20, 20, 0},
+			ExpectedResult: []int64{20, 19, 1},
+		},
+		{
+			Name: "LastBetZeroNoDonorOnSameSide",
+			Bets: []models.Bet{
+				modelstesting.GenerateBet(20, "YES", "one", 1, 0),
+				modelstesting.GenerateBet(10, "NO", "two", 1, time.Minute),
+			},
+			// NO side has only one bet with payout 0, no donor available
+			Payouts:        []int64{20, 0},
+			ExpectedResult: []int64{20, 0},
+		},
+		{
+			Name: "MultipleZeroPayouts",
+			Bets: []models.Bet{
+				modelstesting.GenerateBet(20, "NO", "one", 1, 0),
+				modelstesting.GenerateBet(10, "YES", "two", 1, time.Minute),
+				modelstesting.GenerateBet(10, "YES", "three", 1, 2*time.Minute),
+				modelstesting.GenerateBet(10, "NO", "four", 1, 3*time.Minute),
+			},
+			Payouts:        []int64{11, 13, 6, 0},
+			ExpectedResult: []int64{10, 13, 6, 1},
+		},
+		{
+			Name: "SellBetZeroPayout",
+			Bets: []models.Bet{
+				modelstesting.GenerateBet(20, "NO", "one", 1, 0),
+				modelstesting.GenerateBet(10, "YES", "two", 1, time.Minute),
+				modelstesting.GenerateBet(10, "YES", "three", 1, 2*time.Minute),
+				modelstesting.GenerateBet(-10, "NO", "one", 1, 3*time.Minute),
+			},
+			Payouts:        []int64{11, 13, 6, 0},
+			ExpectedResult: []int64{10, 13, 6, 1},
+		},
+	}
+
+	for _, tc := range testcases {
+		t.Run(tc.Name, func(t *testing.T) {
+			// Make a copy to avoid modifying the test case
+			payoutsCopy := make([]int64, len(tc.Payouts))
+			copy(payoutsCopy, tc.Payouts)
+
+			result := EnsureMinimumPayouts(tc.Bets, payoutsCopy)
+			for i, r := range result {
+				if r != tc.ExpectedResult[i] {
+					t.Errorf("at index %d: expected %d, got %d (full result: %v)",
+						i, tc.ExpectedResult[i], r, result)
+				}
+			}
+		})
+	}
+}
+
 func TestSingleCreditYesNoAllocator(t *testing.T) {
 	tests := []struct {
 		name    string

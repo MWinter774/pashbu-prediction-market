@@ -93,8 +93,9 @@ func TestMarketDBPMPositionsHandler_IncludesZeroPositionUsers(t *testing.T) {
 		t.Fatalf("expected locked bettor to be present in handler response: %+v", positions)
 	}
 
-	if locked.YesSharesOwned != 0 || locked.NoSharesOwned != 0 || locked.Value != 0 {
-		t.Fatalf("expected zero-valued position for locked bettor, got %+v", locked)
+	// After EnsureMinimumPayouts, the last bettor gets at least 1 share on their bet side
+	if locked.YesSharesOwned < 1 {
+		t.Fatalf("expected last bettor to have at least 1 YES share, got %+v", locked)
 	}
 
 	var totals models.Bet

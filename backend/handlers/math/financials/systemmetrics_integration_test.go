@@ -240,8 +240,9 @@ func TestResolveMarket_DistributesAllBetVolume(t *testing.T) {
 	for _, pos := range positions {
 		if pos.Username == "testuser03" {
 			found = true
-			if pos.YesSharesOwned != 0 || pos.NoSharesOwned != 0 || pos.Value != 0 {
-				t.Fatalf("expected zero position for testuser03, got %+v", pos)
+			// After EnsureMinimumPayouts, the last bettor gets at least 1 share
+			if pos.YesSharesOwned < 1 {
+				t.Fatalf("expected last bettor to have at least 1 YES share, got %+v", pos)
 			}
 		}
 	}

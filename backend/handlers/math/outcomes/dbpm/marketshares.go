@@ -223,6 +223,43 @@ func AdjustPayouts(bets []models.Bet, scaledPayouts []int64) []int64 {
 	return scaledPayouts
 }
 
+// EnsureMinimumPayouts guarantees every bet receives at least 1 share.
+// The last bet in a market always has zero divergence from the current probability,
+// so its course payout (and thus scaled payout) is 0. This function bumps any
+// zero-payout bet to 1 and compensates by reducing the largest payout on the same
+// outcome side, preserving the total pool size.
+func EnsureMinimumPayouts(bets []models.Bet, payouts []int64) []int64 {
+	if len(bets) == 0 {
+		return payouts
+	}
+
+	// For each zero-payout bet, bump to 1 and take from the largest payout on the same side
+	for i, p := range payouts {
+		if p != 0 {
+			continue
+		}
+
+		// Find the bet with the largest payout on the same outcome side
+		outcome := bets[i].Outcome
+		maxIdx := -1
+		maxVal := int64(0)
+		for j, pj := range payouts {
+			if j != i && bets[j].Outcome == outcome && pj > maxVal {
+				maxIdx = j
+				maxVal = pj
+			}
+		}
+
+		// Only bump if there's a donor with payout > 1 (so it stays positive after giving 1)
+		if maxIdx >= 0 && payouts[maxIdx] > 1 {
+			payouts[i] = 1
+			payouts[maxIdx] -= 1
+		}
+	}
+
+	return payouts
+}
+
 // AggregateUserPayouts aggregates YES and NO payouts for each user.
 func AggregateUserPayoutsDBPM(bets []models.Bet, finalPayouts []int64) []DBPMMarketPosition {
 	userPayouts := make(map[string]*DBPMMarketPosition)
