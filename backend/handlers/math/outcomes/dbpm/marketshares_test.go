@@ -808,6 +808,16 @@ func TestEnsureMinimumPayouts(t *testing.T) {
 			Payouts:        []int64{11, 13, 6, 0},
 			ExpectedResult: []int64{10, 13, 6, 1},
 		},
+		{
+			Name: "NegativePayoutBumpedToOne",
+			Bets: []models.Bet{
+				modelstesting.GenerateBet(20, "NO", "one", 1, 0),
+				modelstesting.GenerateBet(10, "YES", "two", 1, time.Minute),
+				modelstesting.GenerateBet(10, "YES", "three", 1, 2*time.Minute),
+			},
+			Payouts:        []int64{20, 15, -1},
+			ExpectedResult: []int64{20, 14, 1},
+		},
 	}
 
 	for _, tc := range testcases {
