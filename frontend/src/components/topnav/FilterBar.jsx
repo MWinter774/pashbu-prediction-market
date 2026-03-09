@@ -1,8 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-
-const categories = ['General'];
-const statusFilters = ['Active', 'Closed', 'Resolved', 'All'];
+import { CATEGORIES, STATUS_FILTERS } from '../../constants/categories';
 
 const FilterBar = () => {
   const location = useLocation();
@@ -26,7 +24,7 @@ const FilterBar = () => {
     <div className="border-b border-pm-card-border bg-pm-page">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
-          {categories.map((cat) => (
+          {CATEGORIES.map((cat) => (
             <Link
               key={cat}
               to={buildLink({ category: cat })}
@@ -42,7 +40,7 @@ const FilterBar = () => {
 
           <div className="w-px h-5 bg-pm-card-border mx-2 shrink-0" />
 
-          {statusFilters.map((status) => (
+          {STATUS_FILTERS.map((status) => (
             <Link
               key={status}
               to={buildLink({ status })}
