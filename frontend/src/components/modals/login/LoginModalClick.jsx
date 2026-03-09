@@ -30,7 +30,7 @@ const LoginModalButton = ({ iconOnly = false }) => {
     <>
       <button
         onClick={handleOpenModal}
-        className="text-sm font-medium text-white hover:text-gray-300 transition-colors px-2 py-1.5"
+        className="text-sm font-medium text-white hover:text-white/80 hover:shadow-[0_0_12px_rgba(255,255,255,0.3)] transition-all px-4 py-1.5 rounded-lg"
       >
         Log In
       </button>
