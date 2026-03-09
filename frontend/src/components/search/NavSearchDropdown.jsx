@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import { searchMarkets } from '../../api/marketsApi';
+import { CATEGORIES } from '../../constants/categories';
 
 const NavSearchDropdown = () => {
   const [query, setQuery] = useState('');
@@ -81,6 +82,11 @@ const NavSearchDropdown = () => {
     history.push(`/markets/${marketId}`);
   };
 
+  const handleCategoryClick = () => {
+    setIsOpen(false);
+    setQuery('');
+  };
+
   const hasQuery = query.trim().length > 0;
   const allResults = [
     ...(results?.primaryResults || []),
@@ -125,43 +131,65 @@ const NavSearchDropdown = () => {
       </div>
 
       {/* Dropdown */}
-      {isOpen && hasQuery && (
+      {isOpen && (
         <div className="absolute top-full left-0 right-0 mt-2 bg-pm-card border border-pm-card-border rounded-lg shadow-lg overflow-hidden z-50">
-          <div>
-            {loading && (
-              <div className="px-4 py-3 text-sm text-pm-muted">Searching...</div>
-            )}
-            {!loading && allResults.length === 0 && results && (
-              <div className="px-4 py-3 text-sm text-pm-muted">
-                No markets found for "{query}"
+          {/* Browse mode: categories */}
+          {!hasQuery && (
+            <div className="p-2">
+              <div className="px-2 py-1.5 text-xs font-medium text-pm-muted uppercase tracking-wider">
+                Categories
               </div>
-            )}
-            {allResults.map((item) => (
-              <button
-                key={item.market.id}
-                onClick={() => handleResultClick(item.market.id)}
-                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-pm-hover transition-colors text-left"
-              >
-                {item.market.imageUrl ? (
-                  <img
-                    src={item.market.imageUrl}
-                    alt=""
-                    className="w-8 h-8 rounded-lg object-cover shrink-0"
-                  />
-                ) : (
-                  <div className="w-8 h-8 rounded-lg bg-pm-hover shrink-0 flex items-center justify-center text-pm-muted text-sm">
-                    ?
-                  </div>
-                )}
-                <span className="text-sm text-white truncate flex-1">
-                  {item.market.questionTitle}
-                </span>
-                <span className="text-sm font-semibold text-white shrink-0">
-                  {(item.lastProbability * 100).toFixed(0)}%
-                </span>
-              </button>
-            ))}
-          </div>
+              {CATEGORIES.map((cat) => (
+                <Link
+                  key={cat}
+                  to={cat === 'General' ? '/' : `/?category=${cat}`}
+                  onClick={handleCategoryClick}
+                  className="flex items-center gap-3 px-2 py-2 rounded-md hover:bg-pm-hover transition-colors"
+                >
+                  <span className="text-sm text-white">{cat}</span>
+                </Link>
+              ))}
+            </div>
+          )}
+
+          {/* Search mode: live results */}
+          {hasQuery && (
+            <div>
+              {loading && (
+                <div className="px-4 py-3 text-sm text-pm-muted">Searching...</div>
+              )}
+              {!loading && allResults.length === 0 && results && (
+                <div className="px-4 py-3 text-sm text-pm-muted">
+                  No markets found for "{query}"
+                </div>
+              )}
+              {allResults.map((item) => (
+                <button
+                  key={item.market.id}
+                  onClick={() => handleResultClick(item.market.id)}
+                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-pm-hover transition-colors text-left"
+                >
+                  {item.market.imageUrl ? (
+                    <img
+                      src={item.market.imageUrl}
+                      alt=""
+                      className="w-8 h-8 rounded-lg object-cover shrink-0"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-lg bg-pm-hover shrink-0 flex items-center justify-center text-pm-muted text-sm">
+                      ?
+                    </div>
+                  )}
+                  <span className="text-sm text-white truncate flex-1">
+                    {item.market.questionTitle}
+                  </span>
+                  <span className="text-sm font-semibold text-white shrink-0">
+                    {(item.lastProbability * 100).toFixed(0)}%
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
