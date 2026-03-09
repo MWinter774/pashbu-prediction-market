@@ -11,7 +11,7 @@ const MarketCard = ({ marketData }) => {
   const handleBetClick = (e, side) => {
     e.preventDefault();
     e.stopPropagation();
-    history.push(`/markets/${market.id}?side=${side}`);
+    history.push({ pathname: `/markets/${market.id}`, state: { side } });
   };
 
   return (
