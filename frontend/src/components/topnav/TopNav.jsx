@@ -121,18 +121,18 @@ const GuestMenu = () => {
       {isOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-pm-card border border-pm-card-border rounded-lg shadow-lg py-1 z-50">
           <Link
+            to="/about"
+            className="block md:hidden px-4 py-2 text-sm text-gray-300 hover:bg-pm-hover"
+            onClick={() => setIsOpen(false)}
+          >
+            About
+          </Link>
+          <Link
             to="/stats"
             className="block px-4 py-2 text-sm text-gray-300 hover:bg-pm-hover"
             onClick={() => setIsOpen(false)}
           >
             Stats
-          </Link>
-          <Link
-            to="/about"
-            className="block px-4 py-2 text-sm text-gray-300 hover:bg-pm-hover"
-            onClick={() => setIsOpen(false)}
-          >
-            About
           </Link>
         </div>
       )}
@@ -167,7 +167,19 @@ const TopNav = () => {
 
             {!isLoggedIn ? (
               <div className="flex items-center gap-2">
+                <Link
+                  to="/about"
+                  className="hidden md:block text-sm text-gray-300 hover:text-white transition-colors"
+                >
+                  About
+                </Link>
                 <LoginModalButton />
+                <button
+                  className="px-4 py-1.5 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold rounded-lg transition-colors"
+                  onClick={() => {}}
+                >
+                  Sign Up
+                </button>
                 <GuestMenu />
               </div>
             ) : changePasswordNeeded ? (
