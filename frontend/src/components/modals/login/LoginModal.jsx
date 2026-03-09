@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import ReactDOM from 'react-dom';
 import { useHistory } from 'react-router-dom';
 import { PersonInput, LockInput } from '../../inputs/InputBar';
@@ -20,7 +20,6 @@ const LoginModal = ({ isOpen, onClose, onLogin, redirectAfterLogin }) => {
             if (loginSuccess) {
                 onClose();
                 history.push(redirectAfterLogin);
-                // window.location.reload(); // this is a hack which goes against the principle of reloading the state
             } else {
                 console.error('Login failed:', response.status, await response.text());
                 setError('Error logging in.');
@@ -31,31 +30,46 @@ const LoginModal = ({ isOpen, onClose, onLogin, redirectAfterLogin }) => {
         }
     };
 
+    const handleKeyDown = useCallback((e) => {
+        if (e.key === 'Escape') {
+            onClose();
+        }
+    }, [onClose]);
+
+    useEffect(() => {
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [handleKeyDown]);
+
     if (!isOpen) return null;
 
     return ReactDOM.createPortal(
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-            <div className="relative bg-blue-900 p-6 rounded-lg text-white max-w-sm mx-auto">
-                <h2 className="text-xl mb-4">Login</h2>
+        <div
+            className="fixed inset-0 bg-black/50 flex justify-center items-center z-50"
+            onClick={onClose}
+        >
+            <div
+                className="bg-pm-card border border-pm-card-border rounded-xl p-8 max-w-sm w-full mx-4"
+                onClick={(e) => e.stopPropagation()}
+            >
+                <h2 className="text-xl font-bold text-white text-center mb-6">
+                    Welcome to SocialPredict
+                </h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <PersonInput value={username} onChange={(e) => {
                         setUsername(e.target.value);
                     }} />
-
                     <LockInput value={password} onChange={(e) => {
                         setPassword(e.target.value);
                     }} />
-                    {error && <div className='error-message'>{error}</div>}
+                    {error && <div className="text-red-400 text-sm text-center">{error}</div>}
                     <button
                         type="submit"
-                        className="w-full px-4 py-2 text-white bg-pm-blue hover:bg-pm-blue-hover border border-transparent rounded-lg focus:outline-none"
+                        className="w-full py-3 text-white font-semibold bg-pm-blue hover:bg-pm-blue-hover rounded-lg focus:outline-none transition-colors"
                     >
                         Login
                     </button>
                 </form>
-                <button className="absolute top-0 right-0 mt-4 mr-4 text-gray-400 hover:text-white" onClick={onClose}>
-                    ✕
-                </button>
             </div>
         </div>,
         document.getElementById('modal-root')
