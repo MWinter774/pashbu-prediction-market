@@ -173,8 +173,11 @@ func adjustForPositiveExcess(scaledPayouts []int64, excess int64) []int64 {
 		scaledPayouts[betIndex] -= baseReduction
 	}
 
-	// Apply the remainder reduction to the newest bets
-	for betIndex := int64(len(scaledPayouts)) - 1; remainderReduction > 0; betIndex-- {
+	// Apply the remainder reduction to the newest bets, skipping zero-payout bets
+	for betIndex := int64(len(scaledPayouts)) - 1; remainderReduction > 0 && betIndex >= 0; betIndex-- {
+		if scaledPayouts[betIndex] <= 0 {
+			continue
+		}
 		scaledPayouts[betIndex] -= 1
 		remainderReduction--
 	}
