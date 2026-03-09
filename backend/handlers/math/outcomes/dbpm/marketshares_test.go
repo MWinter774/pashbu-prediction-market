@@ -485,6 +485,12 @@ func TestAdjustForPositiveExcess(t *testing.T) {
 			Excess:         2,
 			ExpectedResult: []int64{10, 19, 29},
 		},
+		{
+			Name:           "ExcessWithZeroPayoutNewestBet",
+			ScaledPayouts:  []int64{7, 17, 3, 29, 0},
+			Excess:         1,
+			ExpectedResult: []int64{7, 17, 3, 28, 0},
+		},
 	}
 
 	for _, tc := range testcases {
