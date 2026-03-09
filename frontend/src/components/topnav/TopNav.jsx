@@ -149,8 +149,12 @@ const TopNav = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-14">
           {/* Left: Logo */}
-          <Link to="/" className="text-white font-bold text-lg shrink-0">
-            SocialPredict
+          <Link to="/" className="flex items-center gap-2 text-white font-bold text-lg shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-pm-blue">
+              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+              <polyline points="16 7 22 7 22 13" />
+            </svg>
+            <span className="hidden sm:inline">SocialPredict</span>
           </Link>
 
           {/* Center: Search */}
