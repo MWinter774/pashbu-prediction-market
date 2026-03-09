@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import { useMarketLabels } from '../../hooks/useMarketLabels';
 import { submitBet, fetchUserShares, submitSale } from '../layouts/trade/TradeUtils';
 import useUserCredit from '../utils/userFinanceTools/FetchUserCredit';
@@ -7,7 +7,8 @@ import { useAuth } from '../../helpers/AuthContent';
 
 const TradeSidebar = ({ market, marketId, currentProbability, token, isLoggedIn, onTransactionSuccess }) => {
   const location = useLocation();
-  const sideParam = new URLSearchParams(location.search).get('side');
+  const history = useHistory();
+  const sideParam = location.state?.side;
   const initialOutcome = sideParam === 'yes' ? 'YES' : sideParam === 'no' ? 'NO' : null;
 
   const [mode, setMode] = useState('buy'); // 'buy' or 'sell'
@@ -31,6 +32,18 @@ const TradeSidebar = ({ market, marketId, currentProbability, token, isLoggedIn,
         .catch(() => setShares({ noSharesOwned: 0, yesSharesOwned: 0 }));
     }
   }, [mode, marketId, token]);
+
+  useEffect(() => {
+    if (sideParam) {
+      const key = `side-used-${marketId}`;
+      if (sessionStorage.getItem(key)) {
+        sessionStorage.removeItem(key);
+        history.replace({ pathname: location.pathname, state: {} });
+      } else {
+        sessionStorage.setItem(key, '1');
+      }
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (initialOutcome && amountRef.current) {
