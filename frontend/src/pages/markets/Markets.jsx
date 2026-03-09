@@ -1,28 +1,21 @@
-import React, { useState } from 'react';
-import CategoryTabs from '../../components/tabs/CategoryTabs';
+import React from 'react';
+import { useLocation } from 'react-router-dom';
 import MarketsByStatusTable from '../../components/tables/MarketsByStatusTable';
 import { TAB_TO_STATUS } from '../../utils/statusMap';
 
 function Markets() {
-  const [activeCategory, setActiveCategory] = useState('General');
-  const [activeStatus, setActiveStatus] = useState('Active');
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const activeStatus = params.get('status') || 'Active';
 
   return (
     <div>
-      {/* "All markets" header */}
       <div className="mb-4">
         <h1 className="text-2xl font-bold text-white">All markets</h1>
       </div>
 
-      <CategoryTabs
-        activeCategory={activeCategory}
-        activeStatus={activeStatus}
-        onCategoryChange={setActiveCategory}
-        onStatusChange={setActiveStatus}
-      />
-
       <div className="mt-6">
-        <MarketsByStatusTable status={TAB_TO_STATUS[activeStatus]} />
+        <MarketsByStatusTable status={TAB_TO_STATUS[activeStatus] || 'active'} />
       </div>
     </div>
   );
