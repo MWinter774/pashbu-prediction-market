@@ -25,13 +25,15 @@ const UserMenu = ({ username, permissions, userCredit, onLogout }) => {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-pm-hover transition-colors"
       >
-        <span>@{username}</span>
-        <span className="text-pm-muted">▾</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
       </button>
       {isOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-pm-card border border-pm-card-border rounded-lg shadow-lg py-1 z-50">
-          <div className="px-4 py-2 text-sm text-pm-muted border-b border-pm-card-border">
-            🪙 {userCredit ?? '...'}
+          <div className="px-4 py-2 text-sm text-white border-b border-pm-card-border font-medium">
+            @{username}
           </div>
           <Link
             to="/profile"
@@ -192,12 +194,23 @@ const TopNav = () => {
                 </button>
               </div>
             ) : (
-              <UserMenu
-                username={username}
-                permissions={permissions || []}
-                userCredit={userCredit}
-                onLogout={logout}
-              />
+              <div className="flex items-center gap-2">
+                <Link
+                  to="/about"
+                  className="hidden md:block text-sm text-gray-300 hover:text-white transition-colors"
+                >
+                  About
+                </Link>
+                <span className="text-sm text-pm-muted">
+                  🪙 {userCredit ?? '...'}
+                </span>
+                <UserMenu
+                  username={username}
+                  permissions={permissions || []}
+                  userCredit={userCredit}
+                  onLogout={logout}
+                />
+              </div>
             )}
           </div>
         </div>
