@@ -236,9 +236,9 @@ func EnsureMinimumPayouts(bets []models.Bet, payouts []int64) []int64 {
 		return payouts
 	}
 
-	// For each zero-payout bet, bump to 1 and take from the largest payout on the same side
+	// For each zero-or-negative-payout bet, bump to 1 and take from the largest payout on the same side
 	for i, p := range payouts {
-		if p != 0 {
+		if p > 0 {
 			continue
 		}
 
