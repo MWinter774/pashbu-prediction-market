@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import LoginModal from './LoginModal';
 import { useAuth } from '../../../helpers/AuthContent';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { LoginSVG } from '../../../assets/components/SvgIcons';
 
 const LoginModalButton = ({ iconOnly = false }) => {
@@ -9,6 +9,17 @@ const LoginModalButton = ({ iconOnly = false }) => {
   const { login } = useAuth();
   const [redirectAfterLogin, setRedirectAfterLogin] = useState('/');
   const history = useHistory();
+  const location = useLocation();
+
+  // Auto-open login modal when ?showLogin=true is in the URL
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('showLogin') === 'true') {
+      setIsLoginModalOpen(true);
+      setRedirectAfterLogin('/');
+      history.replace('/');
+    }
+  }, [location.search, history]);
 
   const handleOpenModal = () => {
     setRedirectAfterLogin(history.location.pathname);
