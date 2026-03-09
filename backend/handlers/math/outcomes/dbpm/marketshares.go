@@ -253,10 +253,11 @@ func EnsureMinimumPayouts(bets []models.Bet, payouts []int64) []int64 {
 			}
 		}
 
-		// Only bump if there's a donor with payout > 1 (so it stays positive after giving 1)
-		if maxIdx >= 0 && payouts[maxIdx] > 1 {
+		// Only bump if there's a donor that can absorb the full delta and stay positive
+		delta := int64(1) - p // e.g., 0→1 = delta 1; -1→1 = delta 2
+		if maxIdx >= 0 && payouts[maxIdx] > delta {
 			payouts[i] = 1
-			payouts[maxIdx] -= 1
+			payouts[maxIdx] -= delta
 		}
 	}
 

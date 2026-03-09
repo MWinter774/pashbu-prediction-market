@@ -816,7 +816,7 @@ func TestEnsureMinimumPayouts(t *testing.T) {
 				modelstesting.GenerateBet(10, "YES", "three", 1, 2*time.Minute),
 			},
 			Payouts:        []int64{20, 15, -1},
-			ExpectedResult: []int64{20, 14, 1},
+			ExpectedResult: []int64{20, 13, 1},
 		},
 	}
 
