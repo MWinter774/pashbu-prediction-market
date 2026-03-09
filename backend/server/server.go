@@ -169,8 +169,9 @@ func Start() {
 		handler = c.Handler(handler)
 	}
 
-	// Allow BACKEND_PORT to be configured via environment, default to 8080
-	port := os.Getenv("BACKEND_PORT")
+	// SERVER_PORT controls the port inside the container (default 8080).
+	// BACKEND_PORT is for the external Docker host mapping only.
+	port := os.Getenv("SERVER_PORT")
 	if port == "" {
 		port = "8080"
 	}
