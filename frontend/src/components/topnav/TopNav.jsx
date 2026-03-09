@@ -160,24 +160,27 @@ const TopNav = () => {
             <span className="hidden sm:inline">SocialPredict</span>
           </Link>
 
-          {/* Search */}
-          <div className="hidden md:flex flex-1 max-w-2xl ml-4">
-            <NavSearchDropdown />
+          {/* Search + About grouped together */}
+          <div className="hidden md:flex items-center gap-4 ml-4">
+            <div className="w-[500px]">
+              <NavSearchDropdown />
+            </div>
+            <Link
+              to="/about"
+              className="flex items-center gap-1.5 text-sm font-medium text-pm-blue hover:text-pm-blue-hover transition-colors shrink-0"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+              </svg>
+              About
+            </Link>
           </div>
 
-          {/* About - positioned right after search like Polymarket's "How it works" */}
-          <Link
-            to="/about"
-            className="hidden md:flex items-center gap-1.5 text-sm font-medium text-pm-blue hover:text-pm-blue-hover transition-colors ml-4 shrink-0"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
-            </svg>
-            About
-          </Link>
+          {/* Spacer pushes auth to the right */}
+          <div className="flex-1" />
 
           {/* Right: Auth */}
-          <div className="flex items-center gap-3 ml-4">
+          <div className="flex items-center gap-3">
             {!isLoggedIn ? (
               <>
                 <LoginModalButton />
