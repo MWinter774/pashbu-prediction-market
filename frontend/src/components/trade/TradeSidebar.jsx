@@ -38,12 +38,15 @@ const TradeSidebar = ({ market, marketId, currentProbability, token, isLoggedIn,
       const key = `side-used-${marketId}`;
       if (sessionStorage.getItem(key)) {
         sessionStorage.removeItem(key);
-        history.replace({ pathname: location.pathname, state: {} });
+        history.replace({ pathname: location.pathname });
       } else {
         sessionStorage.setItem(key, '1');
       }
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    return () => {
+      sessionStorage.removeItem(`side-used-${marketId}`);
+    };
+  }, [sideParam, marketId, history, location.pathname]);
 
   useEffect(() => {
     if (initialOutcome && amountRef.current) {
