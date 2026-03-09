@@ -160,8 +160,8 @@ const TopNav = () => {
             <span className="hidden sm:inline">SocialPredict</span>
           </Link>
 
-          {/* Center: Search */}
-          <div className="hidden md:flex flex-1 max-w-lg mx-8">
+          {/* Search */}
+          <div className="hidden md:flex flex-1 max-w-2xl ml-4">
             <NavSearchDropdown />
           </div>
 
@@ -169,16 +169,19 @@ const TopNav = () => {
           <div className="flex items-center gap-2">
 
             {!isLoggedIn ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <Link
                   to="/about"
-                  className="hidden md:block text-sm text-gray-300 hover:text-white transition-colors"
+                  className="hidden md:flex items-center gap-1.5 text-sm font-medium text-pm-blue hover:text-pm-blue-hover transition-colors"
                 >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+                  </svg>
                   About
                 </Link>
                 <LoginModalButton />
                 <button
-                  className="px-4 py-1.5 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold rounded-lg transition-colors"
+                  className="px-5 py-1.5 bg-pm-blue hover:bg-pm-blue-hover text-white text-sm font-bold rounded-full transition-colors"
                   onClick={() => {}}
                 >
                   Sign Up
@@ -195,11 +198,14 @@ const TopNav = () => {
                 </button>
               </div>
             ) : (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <Link
                   to="/about"
-                  className="hidden md:block text-sm text-gray-300 hover:text-white transition-colors"
+                  className="hidden md:flex items-center gap-1.5 text-sm font-medium text-pm-blue hover:text-pm-blue-hover transition-colors"
                 >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+                  </svg>
                   About
                 </Link>
                 <span className="text-sm text-pm-muted">

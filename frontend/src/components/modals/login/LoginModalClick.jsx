@@ -30,16 +30,9 @@ const LoginModalButton = ({ iconOnly = false }) => {
     <>
       <button
         onClick={handleOpenModal}
-        className={`flex gap-3 items-center p-2 text-gray-300 rounded-lg hover:bg-gray-700 group transition-colors duration-200 ${
-          iconOnly ? 'justify-center' : ''
-        }`}
+        className="text-sm font-medium text-white hover:text-gray-300 transition-colors px-2 py-1.5"
       >
-        <LoginSVG
-          className={`w-5 h-5 text-gray-400 group-hover:text-white transition-colors duration-200 ${
-            iconOnly ? '' : 'mr-3'
-          }`}
-        />
-        {!iconOnly && <span className='text-sm'>Login</span>}
+        Log In
       </button>
       {isLoginModalOpen && (
         <LoginModal
