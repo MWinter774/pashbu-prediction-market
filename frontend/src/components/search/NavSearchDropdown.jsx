@@ -13,6 +13,7 @@ const statusFilters = [
 const NavSearchDropdown = () => {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const containerRef = useRef(null);
@@ -28,6 +29,18 @@ const NavSearchDropdown = () => {
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Global `/` shortcut to focus search
+  useEffect(() => {
+    const handleSlash = (e) => {
+      if (e.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) {
+        e.preventDefault();
+        inputRef.current?.focus();
+      }
+    };
+    document.addEventListener('keydown', handleSlash);
+    return () => document.removeEventListener('keydown', handleSlash);
   }, []);
 
   // Debounced search
@@ -55,6 +68,11 @@ const NavSearchDropdown = () => {
 
   const handleFocus = () => {
     setIsOpen(true);
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
   };
 
   const handleKeyDown = (e) => {
@@ -101,18 +119,23 @@ const NavSearchDropdown = () => {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={handleFocus}
+          onBlur={handleBlur}
           onKeyDown={handleKeyDown}
           placeholder="Search markets..."
           className="w-full pl-9 pr-8 py-2 bg-pm-card border border-pm-card-border rounded-full text-sm text-white placeholder-pm-muted hover:border-gray-500 focus:border-gray-400 focus:outline-none transition-colors"
         />
-        {query && (
+        {query ? (
           <button
             onClick={() => { setQuery(''); setResults(null); inputRef.current?.focus(); }}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-pm-muted hover:text-white text-xs"
           >
             ✕
           </button>
-        )}
+        ) : !isFocused ? (
+          <kbd className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 text-xs text-pm-muted bg-pm-page border border-pm-card-border rounded">
+            /
+          </kbd>
+        ) : null}
       </div>
 
       {/* Dropdown */}
