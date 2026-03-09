@@ -2,14 +2,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import ReactDOM from 'react-dom';
 import { useHistory } from 'react-router-dom';
 import { PersonInput, LockInput } from '../../inputs/InputBar';
-import { useAuth } from '../../../helpers/AuthContent';
-
 const LoginModal = ({ isOpen, onClose, onLogin, redirectAfterLogin }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const history = useHistory();
-    const { login, changePasswordNeeded } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -21,7 +18,6 @@ const LoginModal = ({ isOpen, onClose, onLogin, redirectAfterLogin }) => {
                 onClose();
                 history.push(redirectAfterLogin);
             } else {
-                console.error('Login failed:', response.status, await response.text());
                 setError('Error logging in.');
             }
         } catch (loginError) {
@@ -37,9 +33,10 @@ const LoginModal = ({ isOpen, onClose, onLogin, redirectAfterLogin }) => {
     }, [onClose]);
 
     useEffect(() => {
+        if (!isOpen) return;
         document.addEventListener('keydown', handleKeyDown);
         return () => document.removeEventListener('keydown', handleKeyDown);
-    }, [handleKeyDown]);
+    }, [isOpen, handleKeyDown]);
 
     if (!isOpen) return null;
 
