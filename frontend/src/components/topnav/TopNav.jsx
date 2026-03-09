@@ -185,7 +185,7 @@ const TopNav = () => {
               <>
                 <LoginModalButton />
                 <button
-                  className="px-5 py-1.5 bg-pm-blue hover:bg-pm-blue-hover text-white text-sm font-bold rounded-full transition-colors"
+                  className="px-5 py-1.5 bg-pm-blue hover:bg-pm-blue-hover text-white text-sm font-bold rounded-lg transition-colors"
                   onClick={() => {}}
                 >
                   Sign Up
