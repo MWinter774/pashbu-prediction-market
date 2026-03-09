@@ -135,6 +135,22 @@ func TestDBPMScenarios(t *testing.T) {
 				modelstesting.GenerateBet(-20, "YES", "alice", 1, 2*time.Minute),
 			},
 		},
+		{
+			Name: "Last bet zero divergence with rounding excess",
+			Bets: []models.Bet{
+				modelstesting.GenerateBet(10, "NO", "admin", 1, 0),
+				modelstesting.GenerateBet(5, "YES", "maorwinter", 1, time.Minute),
+				modelstesting.GenerateBet(10, "NO", "user", 1, 2*time.Minute),
+				modelstesting.GenerateBet(20, "NO", "user", 1, 3*time.Minute),
+				modelstesting.GenerateBet(10, "YES", "test", 1, 4*time.Minute),
+			},
+			ExpectedPositions: map[string]struct{ Yes, No int64 }{
+				"admin":      {Yes: 0, No: 7},
+				"maorwinter": {Yes: 16, No: 0},
+				"user":       {Yes: 0, No: 31},
+				"test":       {Yes: 1, No: 0},
+			},
+		},
 	}
 
 	for _, tc := range tests {
